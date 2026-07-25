@@ -15,7 +15,35 @@ DATABASE_PATH = (
 )
 
 
+def model_exists(model_id: str):
+
+    connection = sqlite3.connect(
+        DATABASE_PATH
+    )
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT 1
+        FROM models
+        WHERE model_id = ?
+        """,
+        (model_id,),
+    )
+
+    result = cursor.fetchone()
+
+    connection.close()
+
+    return result is not None
+
+
+
 def add_model(model: ModelRecord):
+
+    if model_exists(model.model_id):
+        return
 
     connection = sqlite3.connect(
         DATABASE_PATH
