@@ -1,0 +1,20 @@
+[project]
+name = "ai-archive-server"
+version = "0.1.0"
+description = "Autonomous AI Model Archive Infrastructure"
+requires-python = ">=3.12"
+
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+]
+
+
+[tool.ruff]
+line-length = 100
+
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests"
+]
