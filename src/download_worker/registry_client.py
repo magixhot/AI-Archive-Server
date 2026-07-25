@@ -1,65 +1,24 @@
-import sqlite3
-from pathlib import Path
-
-
-DATABASE_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "registry"
-    / "data"
-    / "registry.db"
-)
-
-
-def get_queued_models():
-
-    connection = sqlite3.connect(
-        DATABASE_PATH
-    )
-
-    cursor = connection.cursor()
-
-    cursor.execute(
-        """
-        SELECT
-            model_id,
-            family,
-            version,
-            status
-        FROM models
-        WHERE status = 'QUEUED'
-        """
-    )
-
-    rows = cursor.fetchall()
-
-    connection.close()
-
-    return rows
+from src.model_registry.service import update_status
+from src.model_registry.states import ModelStatus
 
 
 def update_model_status(
     model_id: str,
-    status: str,
+    status: ModelStatus,
 ):
-
-    connection = sqlite3.connect(
-        DATABASE_PATH
+    update_status(
+        model_id,
+        status,
     )
 
-    cursor = connection.cursor()
 
-    cursor.execute(
-        """
-        UPDATE models
-        SET status = ?
-        WHERE model_id = ?
-        """,
-        (
-            status,
-            model_id,
-        ),
-    )
+def get_queued_models():
+    from src.model_registry.service import get_models
 
-    connection.commit()
+    models = get_models()
 
-    connection.close()
+    return [
+        model
+        for model in models
+        if model[4] == ModelStatus.QUEUED.value
+    ]

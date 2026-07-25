@@ -4,6 +4,7 @@ from pathlib import Path
 
 from .models import ModelRecord
 
+from .states import ModelStatus
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
@@ -112,7 +113,7 @@ def get_models():
 
 def update_status(
     model_id: str,
-    status: str,
+    status: ModelStatus,
 ):
 
     connection = sqlite3.connect(
@@ -128,7 +129,7 @@ def update_status(
         WHERE model_id = ?
         """,
         (
-            status,
+            status.value,
             model_id,
         ),
     )
