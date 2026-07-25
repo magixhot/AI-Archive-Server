@@ -29,3 +29,7 @@ backups/*
 # OS
 Thumbs.db
 .DS_Store
+
+# Runtime databases
+
+registry/data/*.db
