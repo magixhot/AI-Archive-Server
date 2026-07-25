@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import sqlite3
 
 from pathlib import Path
@@ -111,6 +113,11 @@ def get_models():
 
 
 
+from datetime import datetime
+
+# ... остальные импорты остаются без изменений ...
+
+
 def update_status(
     model_id: str,
     status: ModelStatus,
@@ -122,17 +129,58 @@ def update_status(
 
     cursor = connection.cursor()
 
-    cursor.execute(
-        """
-        UPDATE models
-        SET status = ?
-        WHERE model_id = ?
-        """,
-        (
-            status.value,
-            model_id,
-        ),
-    )
+    download_started = None
+    download_finished = None
+
+    if status == ModelStatus.DOWNLOADING:
+        download_started = datetime.utcnow().isoformat()
+
+        cursor.execute(
+            """
+            UPDATE models
+            SET
+                status = ?,
+                download_started = ?
+            WHERE model_id = ?
+            """,
+            (
+                status.value,
+                download_started,
+                model_id,
+            ),
+        )
+
+    elif status == ModelStatus.DOWNLOADED:
+        download_finished = datetime.utcnow().isoformat()
+
+        cursor.execute(
+            """
+            UPDATE models
+            SET
+                status = ?,
+                download_finished = ?
+            WHERE model_id = ?
+            """,
+            (
+                status.value,
+                download_finished,
+                model_id,
+            ),
+        )
+
+    else:
+
+        cursor.execute(
+            """
+            UPDATE models
+            SET status = ?
+            WHERE model_id = ?
+            """,
+            (
+                status.value,
+                model_id,
+            ),
+        )
 
     connection.commit()
 
