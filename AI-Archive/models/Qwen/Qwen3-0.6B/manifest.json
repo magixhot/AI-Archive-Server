@@ -1,0 +1,10 @@
+{
+  "archive_version": "1.0",
+  "model_id": "Qwen/Qwen3-0.6B",
+  "family": "Qwen",
+  "created": "2026-07-26T10:28:20.202344",
+  "storage": {
+    "repository": "repository/",
+    "metadata": "metadata/"
+  }
+}

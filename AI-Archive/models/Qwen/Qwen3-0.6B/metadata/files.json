@@ -1,0 +1,42 @@
+[
+  {
+    "path": ".gitattributes",
+    "size": 1570
+  },
+  {
+    "path": "config.json",
+    "size": 726
+  },
+  {
+    "path": "generation_config.json",
+    "size": 239
+  },
+  {
+    "path": "LICENSE",
+    "size": 11343
+  },
+  {
+    "path": "merges.txt",
+    "size": 1671853
+  },
+  {
+    "path": "model.safetensors",
+    "size": 1503300328
+  },
+  {
+    "path": "README.md",
+    "size": 13965
+  },
+  {
+    "path": "tokenizer.json",
+    "size": 11422654
+  },
+  {
+    "path": "tokenizer_config.json",
+    "size": 9732
+  },
+  {
+    "path": "vocab.json",
+    "size": 2776833
+  }
+]
