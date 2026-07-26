@@ -1,5 +1,6 @@
 import argparse
 import sys
+from pathlib import Path
 
 from .query import (
     list_models,
@@ -8,6 +9,12 @@ from .query import (
     list_families,
     find_by_family
 )
+
+from storage.validator import (
+    validate_structure,
+    is_valid,
+)
+
 
 
 def cmd_list():
@@ -18,6 +25,7 @@ def cmd_list():
         print(
             model["id"]
         )
+
 
 
 def cmd_count():
@@ -102,6 +110,95 @@ def cmd_info(model_id):
 
 
 
+def cmd_verify(model_id):
+
+    model = get_model(
+        model_id
+    )
+
+
+    if model is None:
+
+        print(
+            "ERROR:"
+        )
+
+        print(
+            f"Model not found: {model_id}"
+        )
+
+        return 1
+
+
+    model_path = Path(
+        model["path"]
+    )
+
+
+    checks = validate_structure(
+        model_path
+    )
+
+
+    print("Model:")
+    print(model_id)
+    print()
+
+
+    print("Storage:")
+
+    print(
+        "OK"
+        if checks["exists"]
+        else "FAILED"
+    )
+
+
+    print("Manifest:")
+
+    print(
+        "OK"
+        if checks["manifest"]
+        else "FAILED"
+    )
+
+
+    print("Metadata:")
+
+    print(
+        "OK"
+        if checks["metadata"]
+        else "FAILED"
+    )
+
+
+    print("Repository:")
+
+    print(
+        "OK"
+        if checks["repository"]
+        else "FAILED"
+    )
+
+
+    print()
+
+
+    if is_valid(checks):
+
+        print("Status:")
+        print("VALIDATED")
+
+        return 0
+
+
+    print("Status:")
+    print("FAILED")
+
+    return 1
+
+
+
 def main():
 
     parser = argparse.ArgumentParser(
@@ -156,7 +253,19 @@ def main():
     )
 
 
+    verify = commands.add_parser(
+        "verify",
+        help="Verify model archive"
+    )
+
+    verify.add_argument(
+        "model_id",
+        help="Model identifier"
+    )
+
+
     args = parser.parse_args()
+
 
 
     if args.command == "list":
@@ -164,14 +273,17 @@ def main():
         cmd_list()
 
 
+
     elif args.command == "count":
 
         cmd_count()
 
 
+
     elif args.command == "families":
 
         cmd_families()
+
 
 
     elif args.command == "family":
@@ -186,9 +298,23 @@ def main():
             )
 
 
+
     elif args.command == "info":
 
         result = cmd_info(
+            args.model_id
+        )
+
+        if result:
+            sys.exit(
+                result
+            )
+
+
+
+    elif args.command == "verify":
+
+        result = cmd_verify(
             args.model_id
         )
 
