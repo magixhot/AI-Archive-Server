@@ -1,139 +1,217 @@
-from src.model_registry.api import register_model
+from pathlib import Path
 
-from .layout import create_model_layout
+from storage.manager import (
+    create_storage,
+)
+
+from storage.validator import (
+    validate_structure,
+    is_valid,
+)
+
+from model_registry.service import (
+    update_status,
+)
+
+from model_registry.states import (
+    ModelStatus,
+)
+
+
 from .repository import copy_repository
 from .cleanup import remove_repository_cache
 from .file_index import generate_file_index
 from .metadata import generate_model_metadata
 from .manifest import create_manifest
-from .validator import validate_archive
 
 
 
 def build_archive(
-    archive_root,
     model_id,
     source_repository,
-    model_info
+    model_info,
 ):
 
     family, model_name = model_id.split("/")
 
 
-    # 1. Create structure
+    #
+    # ARCHIVING START
+    #
 
-    model_path = create_model_layout(
-        archive_root,
-        family,
-        model_name
-    )
-
-
-    repository_path = (
-        model_path
-        / "repository"
-    )
-
-
-    metadata_path = (
-        model_path
-        / "metadata"
-    )
-
-
-    # 2. Copy model repository
-
-    copy_repository(
-        source_repository,
-        repository_path
-    )
-
-
-    # 3. Remove HF cache
-
-    remove_repository_cache(
-        repository_path
-    )
-
-
-    # 4. Generate files index
-
-    generate_file_index(
-        repository_path,
-        metadata_path / "files.json"
-    )
-
-
-    # 5. Generate model metadata
-
-    metadata = generate_model_metadata(
-        model_path,
+    update_status(
         model_id,
-        family,
-        model_info.get(
-            "version"
-        )
+        ModelStatus.ARCHIVING,
     )
 
 
-    # 6. Create manifest
+    try:
 
-    create_manifest(
-    model_path,
-    model_id,
-    family,
-    model_info.get(
-        "version"
-    )
-)
+        #
+        # Create storage structure
+        #
 
-
-    # 7. Validate archive
-
-    validation = validate_archive(
-        model_path
-    )
-
-
-    if all(validation.values()):
-
-        print(
-            "Registering model in SQLite Registry..."
+        model_path = create_storage(
+            family,
+            model_name,
         )
 
 
-        register_model(
+        repository_path = (
+            model_path
+            / "repository"
+        )
 
-            model_id=model_id,
 
-            family=family,
+        metadata_path = (
+            model_path
+            / "metadata"
+        )
 
-            version=model_info.get(
+
+        #
+        # Copy repository
+        #
+
+        copy_repository(
+            source_repository,
+            repository_path,
+        )
+
+
+        #
+        # Remove HF cache
+        #
+
+        remove_repository_cache(
+            repository_path,
+        )
+
+
+        #
+        # Generate index
+        #
+
+        generate_file_index(
+            repository_path,
+            metadata_path
+            / "files.json",
+        )
+
+
+        #
+        # Generate metadata
+        #
+
+        metadata = generate_model_metadata(
+            model_path,
+            model_id,
+            family,
+            model_info.get(
                 "version"
             ),
-
-            storage_path=str(
-                model_path
-            ),
-
-            size_bytes=metadata[
-                "size_bytes"
-            ],
-
-            sha256=metadata[
-                "sha256"
-            ],
         )
 
 
-    return {
+        #
+        # Manifest
+        #
 
-        "path": str(
-            model_path
-        ),
+        create_manifest(
+            model_path,
+            model_id,
+            family,
+            model_info.get(
+                "version"
+            ),
+        )
 
-        "validation": validation,
 
-        "metadata": metadata,
+        #
+        # ARCHIVED
+        #
 
-    }
+        update_status(
+            model_id,
+            ModelStatus.ARCHIVED,
+        )
+
+
+        #
+        # VALIDATION
+        #
+
+        update_status(
+            model_id,
+            ModelStatus.VALIDATING,
+        )
+
+
+        checks = validate_structure(
+            model_path,
+        )
+
+
+        if not is_valid(
+            checks
+        ):
+
+            update_status(
+                model_id,
+                ModelStatus.FAILED,
+            )
+
+            return {
+
+                "path": str(model_path),
+
+                "validation": checks,
+
+                "status": "FAILED",
+
+            }
+
+
+        #
+        # VALIDATED
+        #
+
+        update_status(
+            model_id,
+            ModelStatus.VALIDATED,
+        )
+
+
+        #
+        # READY
+        #
+
+        update_status(
+            model_id,
+            ModelStatus.READY,
+        )
+
+
+        return {
+
+            "path": str(model_path),
+
+            "validation": checks,
+
+            "metadata": metadata,
+
+            "status": "READY",
+
+        }
+
+
+    except Exception:
+
+
+        update_status(
+            model_id,
+            ModelStatus.FAILED,
+        )
+
+
+        raise
