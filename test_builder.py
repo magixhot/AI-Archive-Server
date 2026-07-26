@@ -32,6 +32,10 @@ result = build_archive(
 
 print(result)
 
+print(
+    "Builder finished"
+)
+
 
 if all(
     result["validation"].values()

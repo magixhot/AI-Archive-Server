@@ -8,6 +8,11 @@ from .metadata import write_model_metadata
 from .manifest import create_manifest
 from .validator import validate_archive
 
+from .registry import (
+    create_registry,
+    register_model
+)
+
 
 def build_archive(
     archive_root,
@@ -27,12 +32,10 @@ def build_archive(
         model_name
     )
 
-
     repository_path = (
         model_path
         / "repository"
     )
-
 
     metadata_path = (
         model_path
@@ -85,6 +88,24 @@ def build_archive(
     validation = validate_archive(
         model_path
     )
+
+
+    if all(validation.values()):
+
+        print("Registering model...")
+
+
+        create_registry(
+            "AI-Archive/registry/models.json"
+        )
+
+
+        register_model(
+            "AI-Archive/registry/models.json",
+            model_id,
+            f"models/{family}/{model_name}",
+            family
+        )
 
 
     return {
