@@ -1,61 +1,59 @@
-import json
-from pathlib import Path
+from . import registry
 
 
-def load_registry(registry_path):
+def _convert_model(row):
+    """
+    Convert registry database row
+    into archive query format.
+    """
 
-    registry_path = Path(
-        registry_path
-    )
-
-    with open(
-        registry_path,
-        "r",
-        encoding="utf-8"
-    ) as file:
-
-        return json.load(file)
-
+    return {
+        "id": row[1],
+        "family": row[2],
+        "path": None,
+        "status": row[4],
+    }
 
 
-def list_models(registry_path):
+def _load_models():
 
-    registry = load_registry(
-        registry_path
-    )
+    from model_registry.service import get_models
 
-    return registry.get(
-        "models",
-        []
-    )
+    rows = get_models()
 
-def count_models(
-    registry_path
-):
+    return [
+        _convert_model(row)
+        for row in rows
+    ]
 
-    models = list_models(
-        registry_path
-    )
+
+def list_models():
+
+    return _load_models()
+
+
+
+def count_models():
+
+    models = list_models()
 
     return len(models)
 
 
 
-def list_families(
-    registry_path
-):
+def list_families():
 
-    models = list_models(
-        registry_path
-    )
+    models = list_models()
 
     families = set()
 
     for model in models:
 
-        families.add(
-            model["family"]
-        )
+        if model["family"]:
+
+            families.add(
+                model["family"]
+            )
 
     return sorted(
         families
@@ -64,13 +62,10 @@ def list_families(
 
 
 def find_by_family(
-    registry_path,
     family
 ):
 
-    models = list_models(
-        registry_path
-    )
+    models = list_models()
 
     result = []
 
@@ -84,20 +79,18 @@ def find_by_family(
 
     return result
 
+
+
 def get_model(
-    registry_path,
     model_id
 ):
 
-    models = list_models(
-        registry_path
-    )
+    models = list_models()
 
     for model in models:
 
         if model["id"] == model_id:
 
             return model
-
 
     return None
