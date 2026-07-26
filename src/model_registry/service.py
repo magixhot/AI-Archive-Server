@@ -16,7 +16,6 @@ DATABASE_PATH = (
 )
 
 
-
 def get_connection():
 
     DATABASE_PATH.parent.mkdir(
@@ -27,7 +26,6 @@ def get_connection():
     return sqlite3.connect(
         DATABASE_PATH
     )
-
 
 
 def model_exists(
@@ -54,7 +52,6 @@ def model_exists(
     connection.close()
 
     return result is not None
-
 
 
 def add_model(
@@ -101,7 +98,6 @@ def add_model(
     connection.close()
 
 
-
 def get_models():
 
     connection = get_connection()
@@ -127,8 +123,9 @@ def get_models():
     return rows
 
 
-
-# HF-0006 Query Layer
+# --------------------------------------------------
+# Query Layer
+# --------------------------------------------------
 
 
 def get_all_models():
@@ -148,7 +145,10 @@ def get_all_models():
             status,
             storage_path,
             size_bytes,
-            sha256
+            sha256,
+            archive_created,
+            archive_validated,
+            last_verified
         FROM models
         ORDER BY model_id
         """
@@ -163,7 +163,6 @@ def get_all_models():
         dict(row)
         for row in rows
     ]
-
 
 
 def get_model(
@@ -185,7 +184,10 @@ def get_model(
             status,
             storage_path,
             size_bytes,
-            sha256
+            sha256,
+            archive_created,
+            archive_validated,
+            last_verified
         FROM models
         WHERE model_id = ?
         """,
@@ -205,7 +207,6 @@ def get_model(
 
 
     return dict(row)
-
 
 
 def get_families():
@@ -234,6 +235,10 @@ def get_families():
     ]
 
 
+# --------------------------------------------------
+# Metadata
+# --------------------------------------------------
+
 
 def update_model_metadata(
     model_id: str,
@@ -252,15 +257,13 @@ def update_model_metadata(
         SET
             storage_path = ?,
             size_bytes = ?,
-            sha256 = ?,
-            verified_at = ?
+            sha256 = ?
         WHERE model_id = ?
         """,
         (
             storage_path,
             size_bytes,
             sha256,
-            datetime.utcnow().isoformat(),
             model_id,
         ),
     )
@@ -269,6 +272,10 @@ def update_model_metadata(
 
     connection.close()
 
+
+# --------------------------------------------------
+# Lifecycle
+# --------------------------------------------------
 
 
 def update_status(
@@ -287,13 +294,10 @@ def update_status(
 
     cursor = connection.cursor()
 
+    now = datetime.utcnow().isoformat()
+
 
     if status == ModelStatus.DOWNLOADING:
-
-        download_started = (
-            datetime.utcnow()
-            .isoformat()
-        )
 
         cursor.execute(
             """
@@ -305,18 +309,13 @@ def update_status(
             """,
             (
                 status.value,
-                download_started,
+                now,
                 model_id,
             ),
         )
 
 
     elif status == ModelStatus.DOWNLOADED:
-
-        download_finished = (
-            datetime.utcnow()
-            .isoformat()
-        )
 
         cursor.execute(
             """
@@ -328,7 +327,7 @@ def update_status(
             """,
             (
                 status.value,
-                download_finished,
+                now,
                 model_id,
             ),
         )
@@ -339,7 +338,8 @@ def update_status(
         cursor.execute(
             """
             UPDATE models
-            SET status = ?
+            SET
+                status = ?
             WHERE model_id = ?
             """,
             (
@@ -347,6 +347,134 @@ def update_status(
                 model_id,
             ),
         )
+
+
+    connection.commit()
+
+    connection.close()
+
+
+def mark_archive_created(
+    model_id: str,
+):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    now = datetime.utcnow().isoformat()
+
+
+    cursor.execute(
+        """
+        UPDATE models
+        SET
+            status = ?,
+            archive_created = ?
+        WHERE model_id = ?
+        """,
+        (
+            ModelStatus.ARCHIVED.value,
+            now,
+            model_id,
+        ),
+    )
+
+
+    connection.commit()
+
+    connection.close()
+
+
+
+def mark_archive_validated(
+    model_id: str,
+):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    now = datetime.utcnow().isoformat()
+
+
+    cursor.execute(
+        """
+        UPDATE models
+        SET
+            status = ?,
+            archive_validated = ?,
+            last_verified = ?
+        WHERE model_id = ?
+        """,
+        (
+            ModelStatus.VALIDATED.value,
+            now,
+            now,
+            model_id,
+        ),
+    )
+
+
+    connection.commit()
+
+    connection.close()
+
+
+
+def mark_ready(
+    model_id: str,
+):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+
+    cursor.execute(
+        """
+        UPDATE models
+        SET
+            status = ?
+        WHERE model_id = ?
+        """,
+        (
+            ModelStatus.READY.value,
+            model_id,
+        ),
+    )
+
+
+    connection.commit()
+
+    connection.close()
+
+
+
+def mark_failed(
+    model_id: str,
+    error_message: str | None = None,
+):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+
+    cursor.execute(
+        """
+        UPDATE models
+        SET
+            status = ?,
+            error_message = ?
+        WHERE model_id = ?
+        """,
+        (
+            ModelStatus.FAILED.value,
+            error_message,
+            model_id,
+        ),
+    )
 
 
     connection.commit()
