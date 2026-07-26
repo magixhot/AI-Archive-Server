@@ -1,12 +1,18 @@
 from fastapi import FastAPI
+
 from pydantic import BaseModel
 
-from src.model_registry.api import register_model
+from src.model_registry.api import (
+    register_model,
+    list_models,
+    find_model,
+    list_families,
+)
 
 
 app = FastAPI(
     title="AI Archive Queue Manager",
-    version="0.2.0",
+    version="0.3.0",
 )
 
 
@@ -26,7 +32,7 @@ def health():
     return {
         "status": "healthy",
         "service": "queue-manager",
-        "version": "0.2.0",
+        "version": "0.3.0",
     }
 
 
@@ -43,3 +49,37 @@ def add_model(
     )
 
     return result
+
+
+
+@app.get("/models")
+def get_models():
+
+    return list_models()
+
+
+
+@app.get("/models/{model_id:path}")
+def get_model(
+    model_id: str,
+):
+
+    model = find_model(
+        model_id
+    )
+
+    if model is None:
+
+        return {
+            "error": "Model not found",
+            "model_id": model_id,
+        }
+
+    return model
+
+
+
+@app.get("/families")
+def get_model_families():
+
+    return list_families()

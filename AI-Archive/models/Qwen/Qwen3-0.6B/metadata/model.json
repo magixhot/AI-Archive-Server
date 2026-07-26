@@ -1,7 +1,8 @@
 {
   "model_id": "Qwen/Qwen3-0.6B",
-  "author": "Qwen",
-  "sha": "unknown",
-  "private": false,
-  "disabled": false
+  "family": "Qwen",
+  "version": "0.6B",
+  "size_bytes": 1519209243,
+  "sha256": "5b9bd8fb602e138c7cbcb025fe9fa66012e2222f21f08c6d9f083380b6b0d774",
+  "created_at": "2026-07-26T16:26:06.263083"
 }

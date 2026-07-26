@@ -104,3 +104,9 @@ test_models/
 
 .cache/
 .huggingface/
+
+# =========================
+# Python package metadata
+# =========================
+
+*.egg-info/

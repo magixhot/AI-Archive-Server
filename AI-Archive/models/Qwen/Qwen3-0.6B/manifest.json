@@ -2,9 +2,15 @@
   "archive_version": "1.0",
   "model_id": "Qwen/Qwen3-0.6B",
   "family": "Qwen",
-  "created": "2026-07-26T11:49:14.764834",
+  "version": "0.6B",
+  "status": "ARCHIVED",
+  "created": "2026-07-26T16:26:06.263505",
   "storage": {
     "repository": "repository/",
     "metadata": "metadata/"
+  },
+  "metadata": {
+    "model": "metadata/model.json",
+    "files": "metadata/files.json"
   }
 }

@@ -1,17 +1,13 @@
-from pathlib import Path
+from src.model_registry.api import register_model
 
 from .layout import create_model_layout
 from .repository import copy_repository
 from .cleanup import remove_repository_cache
 from .file_index import generate_file_index
-from .metadata import write_model_metadata
+from .metadata import generate_model_metadata
 from .manifest import create_manifest
 from .validator import validate_archive
 
-from .registry import (
-    create_registry,
-    register_model
-)
 
 
 def build_archive(
@@ -32,10 +28,12 @@ def build_archive(
         model_name
     )
 
+
     repository_path = (
         model_path
         / "repository"
     )
+
 
     metadata_path = (
         model_path
@@ -58,7 +56,7 @@ def build_archive(
     )
 
 
-    # 4. Generate files.json
+    # 4. Generate files index
 
     generate_file_index(
         repository_path,
@@ -66,24 +64,31 @@ def build_archive(
     )
 
 
-    # 5. Write model metadata
+    # 5. Generate model metadata
 
-    write_model_metadata(
+    metadata = generate_model_metadata(
         model_path,
-        model_info
+        model_id,
+        family,
+        model_info.get(
+            "version"
+        )
     )
 
 
     # 6. Create manifest
 
     create_manifest(
-        model_path,
-        model_id,
-        family
+    model_path,
+    model_id,
+    family,
+    model_info.get(
+        "version"
     )
+)
 
 
-    # 7. Validate
+    # 7. Validate archive
 
     validation = validate_archive(
         model_path
@@ -92,23 +97,43 @@ def build_archive(
 
     if all(validation.values()):
 
-        print("Registering model...")
-
-
-        create_registry(
-            "AI-Archive/registry/models.json"
+        print(
+            "Registering model in SQLite Registry..."
         )
 
 
         register_model(
-            "AI-Archive/registry/models.json",
-            model_id,
-            f"models/{family}/{model_name}",
-            family
+
+            model_id=model_id,
+
+            family=family,
+
+            version=model_info.get(
+                "version"
+            ),
+
+            storage_path=str(
+                model_path
+            ),
+
+            size_bytes=metadata[
+                "size_bytes"
+            ],
+
+            sha256=metadata[
+                "sha256"
+            ],
         )
 
 
     return {
-        "path": str(model_path),
-        "validation": validation
+
+        "path": str(
+            model_path
+        ),
+
+        "validation": validation,
+
+        "metadata": metadata,
+
     }

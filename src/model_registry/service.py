@@ -1,12 +1,10 @@
 from datetime import datetime
-
 import sqlite3
-
 from pathlib import Path
 
 from .models import ModelRecord
-
 from .states import ModelStatus
+
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
@@ -18,11 +16,25 @@ DATABASE_PATH = (
 )
 
 
-def model_exists(model_id: str):
 
-    connection = sqlite3.connect(
+def get_connection():
+
+    DATABASE_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    return sqlite3.connect(
         DATABASE_PATH
     )
+
+
+
+def model_exists(
+    model_id: str,
+):
+
+    connection = get_connection()
 
     cursor = connection.cursor()
 
@@ -32,7 +44,9 @@ def model_exists(model_id: str):
         FROM models
         WHERE model_id = ?
         """,
-        (model_id,),
+        (
+            model_id,
+        ),
     )
 
     result = cursor.fetchone()
@@ -43,14 +57,17 @@ def model_exists(model_id: str):
 
 
 
-def add_model(model: ModelRecord):
+def add_model(
+    model: ModelRecord,
+):
 
-    if model_exists(model.model_id):
+    if model_exists(
+        model.model_id
+    ):
         return
 
-    connection = sqlite3.connect(
-        DATABASE_PATH
-    )
+
+    connection = get_connection()
 
     cursor = connection.cursor()
 
@@ -87,9 +104,7 @@ def add_model(model: ModelRecord):
 
 def get_models():
 
-    connection = sqlite3.connect(
-        DATABASE_PATH
-    )
+    connection = get_connection()
 
     cursor = connection.cursor()
 
@@ -113,9 +128,147 @@ def get_models():
 
 
 
-from datetime import datetime
+# HF-0006 Query Layer
 
-# ... остальные импорты остаются без изменений ...
+
+def get_all_models():
+
+    connection = get_connection()
+
+    connection.row_factory = sqlite3.Row
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            model_id,
+            family,
+            version,
+            status,
+            storage_path,
+            size_bytes,
+            sha256
+        FROM models
+        ORDER BY model_id
+        """
+    )
+
+    rows = cursor.fetchall()
+
+    connection.close()
+
+
+    return [
+        dict(row)
+        for row in rows
+    ]
+
+
+
+def get_model(
+    model_id: str,
+):
+
+    connection = get_connection()
+
+    connection.row_factory = sqlite3.Row
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            model_id,
+            family,
+            version,
+            status,
+            storage_path,
+            size_bytes,
+            sha256
+        FROM models
+        WHERE model_id = ?
+        """,
+        (
+            model_id,
+        ),
+    )
+
+    row = cursor.fetchone()
+
+    connection.close()
+
+
+    if row is None:
+
+        return None
+
+
+    return dict(row)
+
+
+
+def get_families():
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT DISTINCT family
+        FROM models
+        WHERE family IS NOT NULL
+        ORDER BY family
+        """
+    )
+
+    rows = cursor.fetchall()
+
+    connection.close()
+
+
+    return [
+        row[0]
+        for row in rows
+    ]
+
+
+
+def update_model_metadata(
+    model_id: str,
+    storage_path: str | None = None,
+    size_bytes: int | None = None,
+    sha256: str | None = None,
+):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        UPDATE models
+        SET
+            storage_path = ?,
+            size_bytes = ?,
+            sha256 = ?,
+            verified_at = ?
+        WHERE model_id = ?
+        """,
+        (
+            storage_path,
+            size_bytes,
+            sha256,
+            datetime.utcnow().isoformat(),
+            model_id,
+        ),
+    )
+
+    connection.commit()
+
+    connection.close()
+
 
 
 def update_status(
@@ -124,19 +277,23 @@ def update_status(
 ):
 
     if isinstance(status, str):
-        status = ModelStatus(status)
 
-    connection = sqlite3.connect(
-        DATABASE_PATH
-    )
+        status = ModelStatus(
+            status
+        )
+
+
+    connection = get_connection()
 
     cursor = connection.cursor()
 
-    download_started = None
-    download_finished = None
 
     if status == ModelStatus.DOWNLOADING:
-        download_started = datetime.utcnow().isoformat()
+
+        download_started = (
+            datetime.utcnow()
+            .isoformat()
+        )
 
         cursor.execute(
             """
@@ -153,8 +310,13 @@ def update_status(
             ),
         )
 
+
     elif status == ModelStatus.DOWNLOADED:
-        download_finished = datetime.utcnow().isoformat()
+
+        download_finished = (
+            datetime.utcnow()
+            .isoformat()
+        )
 
         cursor.execute(
             """
@@ -171,6 +333,7 @@ def update_status(
             ),
         )
 
+
     else:
 
         cursor.execute(
@@ -184,6 +347,7 @@ def update_status(
                 model_id,
             ),
         )
+
 
     connection.commit()
 

@@ -1,30 +1,32 @@
-from . import registry
-
-
-def _convert_model(row):
+def _convert_model(model):
     """
-    Convert registry database row
+    Convert registry model record
     into archive query format.
     """
 
     return {
-        "id": row[1],
-        "family": row[2],
-        "path": None,
-        "status": row[4],
+        "id": model["model_id"],
+        "family": model["family"],
+        "version": model["version"],
+        "path": model["storage_path"],
+        "size_bytes": model["size_bytes"],
+        "sha256": model["sha256"],
+        "status": model["status"],
     }
+
 
 
 def _load_models():
 
-    from model_registry.service import get_models
+    from model_registry.service import get_all_models
 
-    rows = get_models()
+    models = get_all_models()
 
     return [
-        _convert_model(row)
-        for row in rows
+        _convert_model(model)
+        for model in models
     ]
+
 
 
 def list_models():

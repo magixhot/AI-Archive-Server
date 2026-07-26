@@ -1,4 +1,4 @@
-from src.archive.builder import build_archive
+from archive.builder import build_archive
 
 
 result = build_archive(
@@ -10,6 +10,7 @@ result = build_archive(
     source_repository=
         "test_models/Qwen3-0.6B",
 
+
     model_info={
 
         "model_id":
@@ -17,6 +18,9 @@ result = build_archive(
 
         "author":
             "Qwen",
+
+        "version":
+            "0.6B",
 
         "sha":
             "unknown",
@@ -26,11 +30,14 @@ result = build_archive(
 
         "disabled":
             False
+
     }
+
 )
 
 
 print(result)
+
 
 print(
     "Builder finished"
