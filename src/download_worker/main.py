@@ -1,5 +1,5 @@
 from .worker import process_queue
 
+print("=== Download Worker starting ===")
 
-if __name__ == "__main__":
-    process_queue()
+process_queue()

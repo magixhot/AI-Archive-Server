@@ -1,0 +1,150 @@
+SyntaxError: invalid syntax
+>>> exit
+PS D:\OneDrive_magixhot@hotmail.com\OneDrive\AI\Projects\AI-Archive-Server> docker logs ai-archive-download-worker --tail=20
+PS D:\OneDrive_magixhot@hotmail.com\OneDrive\AI\Projects\AI-Archive-Server> docker exec -it ai-archive-download-worker sh
+# ls -R /app
+/app:
+config  data  logs  registry  src
+
+/app/config:
+
+/app/data:
+models
+
+/app/data/models:
+Gemma  Mistral  Qwen
+
+/app/data/models/Gemma:
+gemma-3-27b
+
+/app/data/models/Gemma/gemma-3-27b:
+manifest.json
+
+/app/data/models/Mistral:
+Mistral-7B-Instruct
+
+/app/data/models/Mistral/Mistral-7B-Instruct:
+manifest.json
+
+/app/data/models/Qwen:
+Qwen3-4B-Instruct
+
+/app/data/models/Qwen/Qwen3-4B-Instruct:
+manifest.json
+
+/app/logs:
+
+/app/registry:
+data
+
+/app/registry/data:
+registry.db
+
+/app/src:
+download_worker  model_registry  queue_manager
+
+/app/src/download_worker:
+__init__.py  __pycache__  archive.py  main.py  registry_client.py  worker.py
+
+/app/src/download_worker/__pycache__:
+__init__.cpython-312.pyc  archive.cpython-314.pyc  registry_client.cpython-312.pyc  worker.cpython-314.pyc
+__init__.cpython-314.pyc  main.cpython-312.pyc     registry_client.cpython-314.pyc
+archive.cpython-312.pyc   main.cpython-314.pyc     worker.cpython-312.pyc
+
+/app/src/model_registry:
+__init__.py  __pycache__  api.py  database.py  models.py  service.py  states.py
+
+/app/src/model_registry/__pycache__:
+__init__.cpython-312.pyc  models.cpython-312.pyc   service.cpython-314.pyc
+__init__.cpython-314.pyc  models.cpython-314.pyc   states.cpython-312.pyc
+api.cpython-314.pyc       service.cpython-312.pyc  states.cpython-314.pyc
+
+/app/src/queue_manager:
+__init__.py  __pycache__  main.py
+
+/app/src/queue_manager/__pycache__:
+__init__.cpython-314.pyc  main.cpython-314.pyc
+# ls -R /app/registry
+/app/registry:
+data
+
+/app/registry/data:
+registry.db
+# python
+Python 3.12.13 (main, Jul 14 2026, 02:09:00) [GCC 14.2.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from src.model_registry.service import DATABASE_PATH
+>>>
+>>> print(DATABASE_PATH)
+/app/registry/data/registry.db
+>>> import sqlite3
+>>>
+>>> db = sqlite3.connect(DATABASE_PATH)
+>>>
+>>> print(
+...     db.execute(
+...         "SELECT model_id, status FROM models"
+...     ).fetchall()
+... )
+[('Qwen/Qwen3-30B-A3B-Instruct-2507', 'DOWNLOADING'), ('google/gemma-3-27b', 'DOWNLOADED'), ('meta-llama/Llama-3.1-8B', 'DOWNLOADING'), ('mistralai/Mistral-7B-Instruct', 'DOWNLOADED'), ('Qwen/Qwen3-4B-Instruct', 'DOWNLOADED')]
+>>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

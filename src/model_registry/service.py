@@ -120,8 +120,11 @@ from datetime import datetime
 
 def update_status(
     model_id: str,
-    status: ModelStatus,
+    status,
 ):
+
+    if isinstance(status, str):
+        status = ModelStatus(status)
 
     connection = sqlite3.connect(
         DATABASE_PATH

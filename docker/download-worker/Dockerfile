@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY src /app/src
 
-CMD ["python", "-m", "src.download_worker.main"]
+CMD ["python", "-u", "-m", "src.download_worker.main"]
