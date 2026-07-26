@@ -1,60 +1,25 @@
-import json
-from datetime import datetime
-from pathlib import Path
+from storage.manager import create_storage
+from model_registry.service import update_status
+from model_registry.states import ModelStatus
 
-
-BASE_DIR = Path(__file__).resolve().parents[2]
-
-ARCHIVE_ROOT = (
-    BASE_DIR
-    / "data"
-    / "models"
-)
 
 
 def create_model_directory(
     model_id: str,
     family: str,
     version: str,
-) -> Path:
+):
 
     model_name = model_id.split("/")[-1]
 
-    model_path = (
-        ARCHIVE_ROOT
-        / family
-        / model_name
+
+    update_status(
+        model_id,
+        ModelStatus.ARCHIVING,
     )
 
-    model_path.mkdir(
-        parents=True,
-        exist_ok=True,
+
+    return create_storage(
+        family,
+        model_name,
     )
-
-    manifest = {
-
-        "model_id": model_id,
-
-        "family": family,
-
-        "version": version,
-
-        "status": "DOWNLOADING",
-
-        "created_at": datetime.utcnow().isoformat()
-
-    }
-
-    with open(
-        model_path / "manifest.json",
-        "w",
-        encoding="utf-8",
-    ) as file:
-
-        json.dump(
-            manifest,
-            file,
-            indent=4,
-        )
-
-    return model_path
