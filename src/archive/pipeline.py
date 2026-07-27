@@ -1,22 +1,40 @@
 from pathlib import Path
 
 from src.integrity.validator import validate_manifest
+from src.integrity.result import IntegrityResult
 
 
-def verify_archive(model_path: str) -> bool:
+def verify_archive(model_path: str) -> IntegrityResult:
     """
     Verify model archive integrity.
 
     Returns:
-        True  - archive is valid
-        False - archive is corrupted
+        IntegrityResult with verification status.
     """
 
     path = Path(model_path)
 
     if not path.exists():
-        return False
+        return IntegrityResult(
+            valid=False,
+            model=path.name,
+            checked_files=0,
+            failed_files=[
+                str(path)
+            ]
+        )
 
-    return validate_manifest(
+    valid = validate_manifest(
         path
+    )
+
+    return IntegrityResult(
+        valid=valid,
+        model=path.name,
+        checked_files=0,
+        failed_files=[]
+        if valid
+        else [
+            "manifest validation failed"
+        ]
     )
