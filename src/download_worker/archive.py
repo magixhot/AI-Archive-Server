@@ -1,6 +1,6 @@
-from storage.manager import create_storage
-from model_registry.service import update_status
-from model_registry.states import ModelStatus
+from src.storage.manager import create_storage
+from src.model_registry.service import update_status
+from src.model_registry.states import ModelStatus
 
 
 

@@ -1,3 +1,6 @@
+from src.model_registry.service import get_all_models
+
+
 def _convert_model(model):
     """
     Convert registry model record
@@ -15,10 +18,7 @@ def _convert_model(model):
     }
 
 
-
 def _load_models():
-
-    from model_registry.service import get_all_models
 
     models = get_all_models()
 
@@ -28,11 +28,9 @@ def _load_models():
     ]
 
 
-
 def list_models():
 
     return _load_models()
-
 
 
 def count_models():
@@ -40,7 +38,6 @@ def count_models():
     models = list_models()
 
     return len(models)
-
 
 
 def list_families():
@@ -62,7 +59,6 @@ def list_families():
     )
 
 
-
 def find_by_family(
     family
 ):
@@ -80,7 +76,6 @@ def find_by_family(
             )
 
     return result
-
 
 
 def get_model(

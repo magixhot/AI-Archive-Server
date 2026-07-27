@@ -1,11 +1,11 @@
-from storage.manager import create_storage
+from src.storage.manager import create_storage
 
-from model_registry.service import (
+from src.model_registry.service import (
     update_model_metadata,
     update_status,
 )
 
-from model_registry.states import ModelStatus
+from src.model_registry.states import ModelStatus
 
 from .repository import copy_repository
 from .cleanup import remove_repository_cache
