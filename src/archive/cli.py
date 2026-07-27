@@ -7,13 +7,15 @@ from .query import (
     get_model,
     count_models,
     list_families,
-    find_by_family
+    find_by_family,
 )
 
 from storage.validator import (
     validate_structure,
     is_valid,
 )
+
+from integrity.service import check_integrity
 
 
 
@@ -80,10 +82,7 @@ def cmd_info(model_id):
 
     if model is None:
 
-        print(
-            "ERROR:"
-        )
-
+        print("ERROR:")
         print(
             f"Model not found: {model_id}"
         )
@@ -119,10 +118,7 @@ def cmd_verify(model_id):
 
     if model is None:
 
-        print(
-            "ERROR:"
-        )
-
+        print("ERROR:")
         print(
             f"Model not found: {model_id}"
         )
@@ -146,7 +142,6 @@ def cmd_verify(model_id):
 
 
     print("Storage:")
-
     print(
         "OK"
         if checks["exists"]
@@ -155,7 +150,6 @@ def cmd_verify(model_id):
 
 
     print("Manifest:")
-
     print(
         "OK"
         if checks["manifest"]
@@ -164,7 +158,6 @@ def cmd_verify(model_id):
 
 
     print("Metadata:")
-
     print(
         "OK"
         if checks["metadata"]
@@ -173,7 +166,6 @@ def cmd_verify(model_id):
 
 
     print("Repository:")
-
     print(
         "OK"
         if checks["repository"]
@@ -184,7 +176,39 @@ def cmd_verify(model_id):
     print()
 
 
-    if is_valid(checks):
+    integrity = check_integrity(
+        model_path
+    )
+
+
+    print("Integrity:")
+
+    print(
+        "PASS"
+        if integrity.valid
+        else "FAILED"
+    )
+
+    print()
+
+    print("Files checked:")
+    print(
+        integrity.checked_files
+    )
+
+    print()
+
+    print("Failed files:")
+    print(
+        len(
+            integrity.failed_files
+        )
+    )
+
+    print()
+
+
+    if is_valid(checks) and integrity.valid:
 
         print("Status:")
         print("VALIDATED")
