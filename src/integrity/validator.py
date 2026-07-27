@@ -1,14 +1,15 @@
 from pathlib import Path
 import json
 
-from .manifest import build_manifest
+from .hasher import file_sha256
 
 
 def validate_manifest(model_path: str | Path) -> bool:
     """
-    Проверяет соответствие файлов manifest.json.
+    Проверяет целостность архива.
 
-    Возвращает True, если всё совпадает.
+    Возвращает True,
+    если все файлы совпадают.
     """
 
     result = verify_manifest(
@@ -18,48 +19,104 @@ def validate_manifest(model_path: str | Path) -> bool:
     return result["valid"]
 
 
+
 def verify_manifest(model_path: str | Path) -> dict:
     """
-    Выполняет проверку manifest.json
-    и возвращает подробный результат.
+    Проверяет файлы модели
+    по metadata/files.json.
     """
 
-    model_path = Path(model_path)
+    model_path = Path(
+        model_path
+    )
 
-    manifest_file = model_path / "manifest.json"
+    files_index = (
+        model_path
+        / "metadata"
+        / "files.json"
+    )
 
-    if not manifest_file.exists():
+    repository = (
+        model_path
+        / "repository"
+    )
+
+
+    if not files_index.exists():
+
         return {
             "valid": False,
             "checked_files": 0,
             "failed_files": [
-                "manifest.json missing"
-            ]
+                "files.json missing"
+            ],
         }
 
+
+    if not repository.exists():
+
+        return {
+            "valid": False,
+            "checked_files": 0,
+            "failed_files": [
+                "repository missing"
+            ],
+        }
+
+
     with open(
-        manifest_file,
+        files_index,
         "r",
         encoding="utf-8",
     ) as file:
 
-        stored = json.load(file)["files"]
+        files = json.load(
+            file
+        )
 
-    current = build_manifest(
-        model_path
-    )
-
-    checked_files = len(stored)
 
     failed_files = []
 
-    if stored != current:
-        failed_files.append(
-            "manifest mismatch"
+    checked_files = 0
+
+
+    for item in files:
+
+        relative_path = Path(
+            item["path"]
         )
 
+        target = (
+            repository
+            / relative_path
+        )
+
+        checked_files += 1
+
+
+        if not target.exists():
+
+            failed_files.append(
+                item["path"]
+            )
+
+            continue
+
+
+        current_hash = file_sha256(
+            target
+        )
+
+
+        if current_hash != item["sha256"]:
+
+            failed_files.append(
+                item["path"]
+            )
+
+
     return {
-        "valid": stored == current,
+        "valid": len(failed_files) == 0,
         "checked_files": checked_files,
         "failed_files": failed_files,
     }
