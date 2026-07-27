@@ -2,6 +2,7 @@ from pathlib import Path
 
 from .validator import verify_manifest
 from .result import IntegrityResult
+from .history import save_history
 
 
 def check_integrity(model_path: str | Path) -> IntegrityResult:
@@ -18,7 +19,7 @@ def check_integrity(model_path: str | Path) -> IntegrityResult:
 
     if not path.exists():
 
-        return IntegrityResult(
+        result = IntegrityResult(
             valid=False,
             model=path.name,
             checked_files=0,
@@ -27,15 +28,29 @@ def check_integrity(model_path: str | Path) -> IntegrityResult:
             ]
         )
 
+        save_history(
+            result
+        )
 
-    result = verify_manifest(
+        return result
+
+
+    verification = verify_manifest(
         path
     )
 
 
-    return IntegrityResult(
-        valid=result["valid"],
+    result = IntegrityResult(
+        valid=verification["valid"],
         model=path.name,
-        checked_files=result["checked_files"],
-        failed_files=result["failed_files"]
+        checked_files=verification["checked_files"],
+        failed_files=verification["failed_files"]
     )
+
+
+    save_history(
+        result
+    )
+
+
+    return result
