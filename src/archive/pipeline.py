@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.integrity.validator import validate_manifest
+from src.integrity.validator import verify_manifest
 from src.integrity.result import IntegrityResult
 
 
@@ -24,17 +24,13 @@ def verify_archive(model_path: str) -> IntegrityResult:
             ]
         )
 
-    valid = validate_manifest(
+    verification = verify_manifest(
         path
     )
 
     return IntegrityResult(
-        valid=valid,
+        valid=verification["valid"],
         model=path.name,
-        checked_files=0,
-        failed_files=[]
-        if valid
-        else [
-            "manifest validation failed"
-        ]
+        checked_files=verification["checked_files"],
+        failed_files=verification["failed_files"]
     )
