@@ -10,13 +10,17 @@ from .query import (
     find_by_family,
 )
 
-from storage.validator import (
+from src.storage.validator import (
     validate_structure,
     is_valid,
 )
 
-from integrity.service import check_integrity
+from src.integrity.service import check_integrity
 
+from src.integrity.api import (
+    history,
+    stats,
+)
 
 
 def cmd_list():
@@ -29,14 +33,12 @@ def cmd_list():
         )
 
 
-
 def cmd_count():
 
     total = count_models()
 
     print("Models:")
     print(total)
-
 
 
 def cmd_families():
@@ -47,7 +49,6 @@ def cmd_families():
         print(
             family
         )
-
 
 
 def cmd_family(family):
@@ -71,7 +72,6 @@ def cmd_family(family):
         )
 
     return 0
-
 
 
 def cmd_info(model_id):
@@ -108,13 +108,11 @@ def cmd_info(model_id):
     return 0
 
 
-
 def cmd_verify(model_id):
 
     model = get_model(
         model_id
     )
-
 
     if model is None:
 
@@ -222,6 +220,143 @@ def cmd_verify(model_id):
     return 1
 
 
+def cmd_history(model_id):
+
+    model = get_model(
+        model_id
+    )
+
+    if model is None:
+
+        print("ERROR:")
+        print(
+            f"Model not found: {model_id}"
+        )
+
+        return 1
+
+
+    history_data = history(
+        model["id"].split("/")[-1]
+    )
+
+
+    print("Model:")
+    print(model_id)
+    print()
+
+
+    print("Integrity History")
+    print("-----------------")
+
+
+    if not history_data:
+
+        print(
+            "No integrity history found."
+        )
+
+        return 0
+
+
+    for item in history_data:
+
+        print(
+            item["timestamp"]
+        )
+
+        print(
+            "PASS"
+            if item["valid"]
+            else "FAILED"
+        )
+
+        print(
+            f'Checked files: {item["checked_files"]}'
+        )
+
+        print(
+            f'Failed files: {len(item["failed_files"])}'
+        )
+
+        print()
+
+
+    return 0
+
+
+def cmd_stats(model_id):
+
+    model = get_model(
+        model_id
+    )
+
+    if model is None:
+
+        print("ERROR:")
+        print(
+            f"Model not found: {model_id}"
+        )
+
+        return 1
+
+
+    result = stats(
+        model["id"].split("/")[-1]
+    )
+
+
+    print("Model:")
+    print(model_id)
+    print()
+
+
+    print("Integrity Statistics")
+    print("--------------------")
+
+
+    print("Total checks:")
+    print(
+        result["total_checks"]
+    )
+
+    print()
+
+    print("Passed:")
+    print(
+        result["passed"]
+    )
+
+    print()
+
+    print("Failed:")
+    print(
+        result["failed"]
+    )
+
+    print()
+
+    print("Success rate:")
+    print(
+        f'{result["success_rate"]}%'
+    )
+
+    print()
+
+    print("Last pass:")
+    print(
+        result["last_pass"]
+    )
+
+    print()
+
+    print("Last fail:")
+    print(
+        result["last_fail"]
+    )
+
+    return 0
+
 
 def main():
 
@@ -288,8 +423,29 @@ def main():
     )
 
 
-    args = parser.parse_args()
+    history_parser = commands.add_parser(
+        "history",
+        help="Show integrity history"
+    )
 
+    history_parser.add_argument(
+        "model_id",
+        help="Model identifier"
+    )
+
+
+    stats_parser = commands.add_parser(
+        "stats",
+        help="Show integrity statistics"
+    )
+
+    stats_parser.add_argument(
+        "model_id",
+        help="Model identifier"
+    )
+
+
+    args = parser.parse_args()
 
 
     if args.command == "list":
@@ -297,17 +453,14 @@ def main():
         cmd_list()
 
 
-
     elif args.command == "count":
 
         cmd_count()
 
 
-
     elif args.command == "families":
 
         cmd_families()
-
 
 
     elif args.command == "family":
@@ -317,10 +470,7 @@ def main():
         )
 
         if result:
-            sys.exit(
-                result
-            )
-
+            sys.exit(result)
 
 
     elif args.command == "info":
@@ -330,10 +480,7 @@ def main():
         )
 
         if result:
-            sys.exit(
-                result
-            )
-
+            sys.exit(result)
 
 
     elif args.command == "verify":
@@ -343,6 +490,28 @@ def main():
         )
 
         if result:
-            sys.exit(
-                result
-            )
+            sys.exit(result)
+
+
+    elif args.command == "history":
+
+        result = cmd_history(
+            args.model_id
+        )
+
+        if result:
+            sys.exit(result)
+
+
+    elif args.command == "stats":
+
+        result = cmd_stats(
+            args.model_id
+        )
+
+        if result:
+            sys.exit(result)
+
+
+if __name__ == "__main__":
+    main()

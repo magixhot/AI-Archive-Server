@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from .statistics import get_statistics
 from .service import check_integrity
 from .history_reader import load_history
 from .latest import latest_result
@@ -42,3 +42,12 @@ def latest(model: str):
     return latest_result(
         model
     )
+
+def stats(model: str) -> dict:
+    """
+    Return integrity statistics.
+    """
+
+    return get_statistics(
+        model
+    )    
