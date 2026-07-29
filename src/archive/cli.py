@@ -22,6 +22,9 @@ from src.integrity.api import (
     stats,
 )
 
+from src.archive_sync import sync_archive
+from src.storage.paths import MODELS_ROOT
+
 
 def cmd_list():
 
@@ -358,6 +361,35 @@ def cmd_stats(model_id):
     return 0
 
 
+def cmd_sync(source, target, apply):
+
+    result = sync_archive(
+        source,
+        target,
+        dry_run=not apply,
+    )
+
+    print("Mode:")
+    print("APPLY" if apply else "DRY RUN")
+    print()
+
+    print("Files to copy:")
+    print(len(result.copied_files))
+    print()
+
+    print("Unchanged files:")
+    print(len(result.unchanged_files))
+    print()
+
+    if result.errors:
+        print("Errors:")
+        for error in result.errors:
+            print(error)
+        return 1
+
+    return 0
+
+
 def main():
 
     parser = argparse.ArgumentParser(
@@ -445,6 +477,29 @@ def main():
     )
 
 
+    sync_parser = commands.add_parser(
+        "sync",
+        help="Synchronize the archive to a target directory"
+    )
+
+    sync_parser.add_argument(
+        "target",
+        help="Destination archive models directory"
+    )
+
+    sync_parser.add_argument(
+        "--source",
+        default=str(MODELS_ROOT),
+        help="Source archive models directory"
+    )
+
+    sync_parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Copy files; without this flag only a synchronization plan is shown"
+    )
+
+
     args = parser.parse_args()
 
 
@@ -507,6 +562,18 @@ def main():
 
         result = cmd_stats(
             args.model_id
+        )
+
+        if result:
+            sys.exit(result)
+
+
+    elif args.command == "sync":
+
+        result = cmd_sync(
+            args.source,
+            args.target,
+            args.apply,
         )
 
         if result:

@@ -283,6 +283,14 @@ def update_status(
     status,
 ):
 
+    print(
+        "DEBUG update_status:",
+        model_id,
+        status,
+        type(status),
+    )
+    
+    
     if isinstance(status, str):
 
         status = ModelStatus(

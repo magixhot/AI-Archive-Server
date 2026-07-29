@@ -1,6 +1,9 @@
 import time
 
-from .archive import create_model_directory
+from src.hf_client.downloader import download_repository
+from src.archive.builder import build_archive
+from src.storage.cache import get_cached_archive
+
 from .registry_client import (
     get_queued_models,
     update_model_status,
@@ -22,33 +25,62 @@ def process_queue():
         for model in models:
 
             model_id = model[1]
-            family = model[2]
-            version = model[3]
-            
+
             print(
                 f"Processing model: {model_id}"
             )
+
+            cached_archive = get_cached_archive(
+                model_id
+            )
+
+            if cached_archive:
+
+                print(
+                    f"Using cached archive: {cached_archive}"
+                )
+
+                update_model_status(
+                    model_id,
+                    ModelStatus.VALIDATED,
+                )
+
+                continue
 
             update_model_status(
                 model_id,
                 ModelStatus.DOWNLOADING,
             )
 
-            model_path = create_model_directory(
+            print(
+                "Downloading model..."
+            )
+
+            source_repository = download_repository(
                 model_id,
-                family,
-                version,
+                "data/downloads",
             )
 
             print(
-                f"Archive created: {model_path}"
+                f"Downloaded to: {source_repository}"
             )
 
-            time.sleep(2)
+            model_info = {
+                "version": model[3],
+            }
 
-            update_model_status(
+            print(
+                "Building archive..."
+            )
+
+            result = build_archive(
                 model_id,
-                ModelStatus.DOWNLOADED,
+                source_repository,
+                model_info,
+            )
+
+            print(
+                f"Archive created: {result['path']}"
             )
 
             print(

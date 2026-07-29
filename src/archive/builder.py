@@ -21,7 +21,7 @@ def build_archive(
     model_info,
 ):
 
-    family, model_name = model_id.split("/")
+    family, model_name = model_id.split("/", 1)
 
     update_status(
         model_id,
@@ -79,7 +79,7 @@ def build_archive(
         model_path,
     )
 
-    if all(validation.values()):
+    if validation["valid"]:
 
         update_model_metadata(
             model_id=model_id,

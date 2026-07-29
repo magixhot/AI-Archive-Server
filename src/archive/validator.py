@@ -247,4 +247,6 @@ def validate_archive(
 
 
 
+    result["valid"] = all(result.values())
+
     return result

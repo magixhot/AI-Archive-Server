@@ -15,6 +15,7 @@ services:
       - "8080:8080"
 
     volumes:
+      - ./AI-Archive:/app/AI-Archive
       - ./data:/app/data
       - ./logs:/app/logs
       - ./config:/app/config
@@ -31,6 +32,7 @@ services:
     restart: unless-stopped
 
     volumes:
+      - ./AI-Archive:/app/AI-Archive
       - ./data:/app/data
       - ./logs:/app/logs
       - ./config:/app/config
