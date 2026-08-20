@@ -5,6 +5,7 @@ from .service import (
     get_all_models,
     get_model,
     get_families,
+    model_exists,
 )
 
 
@@ -17,6 +18,19 @@ def register_model(
     size_bytes: int | None = None,
     sha256: str | None = None,
 ):
+
+    if model_exists(
+        model_id
+    ):
+        existing = get_model(
+            model_id
+        )
+
+        return {
+            "model_id": model_id,
+            "status": existing["status"],
+            "existing": True,
+        }
 
     model = ModelRecord(
 
@@ -44,6 +58,8 @@ def register_model(
         "model_id": model.model_id,
 
         "status": model.status,
+
+        "existing": False,
 
     }
 
