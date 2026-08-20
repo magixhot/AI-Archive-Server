@@ -63,7 +63,6 @@ def add_model(
     ):
         return
 
-
     connection = get_connection()
 
     cursor = connection.cursor()
@@ -146,6 +145,7 @@ def get_all_models():
             storage_path,
             size_bytes,
             sha256,
+            error_message,
             archive_created,
             archive_validated,
             last_verified
@@ -157,7 +157,6 @@ def get_all_models():
     rows = cursor.fetchall()
 
     connection.close()
-
 
     return [
         dict(row)
@@ -185,6 +184,7 @@ def get_model(
             storage_path,
             size_bytes,
             sha256,
+            error_message,
             archive_created,
             archive_validated,
             last_verified
@@ -200,11 +200,8 @@ def get_model(
 
     connection.close()
 
-
     if row is None:
-
         return None
-
 
     return dict(row)
 
@@ -227,7 +224,6 @@ def get_families():
     rows = cursor.fetchall()
 
     connection.close()
-
 
     return [
         row[0]
@@ -289,21 +285,18 @@ def update_status(
         status,
         type(status),
     )
-    
-    
+
     if isinstance(status, str):
 
         status = ModelStatus(
             status
         )
 
-
     connection = get_connection()
 
     cursor = connection.cursor()
 
     now = datetime.utcnow().isoformat()
-
 
     if status == ModelStatus.DOWNLOADING:
 
@@ -322,7 +315,6 @@ def update_status(
             ),
         )
 
-
     elif status == ModelStatus.DOWNLOADED:
 
         cursor.execute(
@@ -340,7 +332,6 @@ def update_status(
             ),
         )
 
-
     else:
 
         cursor.execute(
@@ -355,7 +346,6 @@ def update_status(
                 model_id,
             ),
         )
-
 
     connection.commit()
 
@@ -372,7 +362,6 @@ def mark_archive_created(
 
     now = datetime.utcnow().isoformat()
 
-
     cursor.execute(
         """
         UPDATE models
@@ -388,11 +377,9 @@ def mark_archive_created(
         ),
     )
 
-
     connection.commit()
 
     connection.close()
-
 
 
 def mark_archive_validated(
@@ -404,7 +391,6 @@ def mark_archive_validated(
     cursor = connection.cursor()
 
     now = datetime.utcnow().isoformat()
-
 
     cursor.execute(
         """
@@ -423,11 +409,9 @@ def mark_archive_validated(
         ),
     )
 
-
     connection.commit()
 
     connection.close()
-
 
 
 def mark_ready(
@@ -437,7 +421,6 @@ def mark_ready(
     connection = get_connection()
 
     cursor = connection.cursor()
-
 
     cursor.execute(
         """
@@ -452,11 +435,9 @@ def mark_ready(
         ),
     )
 
-
     connection.commit()
 
     connection.close()
-
 
 
 def mark_failed(
@@ -467,7 +448,6 @@ def mark_failed(
     connection = get_connection()
 
     cursor = connection.cursor()
-
 
     cursor.execute(
         """
@@ -484,10 +464,10 @@ def mark_failed(
         ),
     )
 
-
     connection.commit()
 
     connection.close()
+
 
 def retry_failed(
     model_id: str,
