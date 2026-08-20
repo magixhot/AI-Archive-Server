@@ -4,7 +4,7 @@ Project: AI Infrastructure
 
 Document ID: DOC-0001.12
 
-Version: 1.0
+Version: 1.1
 
 Status: Active
 
@@ -19,7 +19,8 @@ Status: Active
 - изменения структуры проекта;
 - новые стандарты;
 - принятые архитектурные решения;
-- завершённые этапы разработки.
+- завершённые этапы разработки;
+- значимые operational verification milestones.
 
 Мелкие изменения исходного кода, исправления опечаток и косметические изменения в журнал не заносятся.
 
@@ -230,43 +231,17 @@ Completed
 
 ---
 
-# Documentation Rules
+# 2026-08-20
 
-В журнал заносятся только:
-
-- новые Runtime-проекты;
-- завершённые HF-этапы;
-- новые стандарты;
-- принятые архитектурные решения;
-- изменения архитектуры;
-- изменения структуры проекта;
-- завершение крупных этапов разработки.
-
-В журнал не заносятся:
-
-- текущий статус проекта;
-- будущие планы;
-- исправления опечаток;
-- косметические изменения;
-- мелкие изменения исходного кода;
-- изменения комментариев.
-
----
-
-# Current Status
-
-Последнее зарегистрированное событие:
-
-DOC-0001 — Project Documentation Framework
+## Authoritative Archive Reconciliation
 
 Status:
 
-Completed
+Implemented and Verified
 
----
+Добавлен механизм reconciliation существующего authoritative model archive с Registry.
 
-Last Updated:
+Создан новый модуль:
 
-2026-07-29
-
-End of Document
+```text
+src/reconciliation/
