@@ -4,7 +4,7 @@ Project: AI Infrastructure
 
 Document ID: DOC-0001.12
 
-Version: 1.1
+Version: 1.0
 
 Status: Active
 
@@ -19,8 +19,7 @@ Status: Active
 - изменения структуры проекта;
 - новые стандарты;
 - принятые архитектурные решения;
-- завершённые этапы разработки;
-- значимые operational verification milestones.
+- завершённые этапы разработки.
 
 Мелкие изменения исходного кода, исправления опечаток и косметические изменения в журнал не заносятся.
 
@@ -231,17 +230,64 @@ Completed
 
 ---
 
-# 2026-08-20
+# Documentation Rules
 
-## Authoritative Archive Reconciliation
+В журнал заносятся только:
+
+- новые Runtime-проекты;
+- завершённые HF-этапы;
+- новые стандарты;
+- принятые архитектурные решения;
+- изменения архитектуры;
+- изменения структуры проекта;
+- завершение крупных этапов разработки.
+
+В журнал не заносятся:
+
+- текущий статус проекта;
+- будущие планы;
+- исправления опечаток;
+- косметические изменения;
+- мелкие изменения исходного кода;
+- изменения комментариев.
+
+---
+
+# Current Status
+
+Последнее зарегистрированное событие:
+
+DOC-0001 — Project Documentation Framework
 
 Status:
 
-Implemented and Verified
+Completed
 
-Добавлен механизм reconciliation существующего authoritative model archive с Registry.
+---
 
-Создан новый модуль:
+# 2026-08-20
 
-```text
-src/reconciliation/
+## HF Milestone Reconciliation
+
+Status:
+
+Completed
+
+Проведена сверка исторических HF milestones с фактической Git history.
+
+Подтверждено:
+
+- HF-0011 — Integrity Service Layer;
+- HF-0012 — Integrity Public API / Runtime Normalization;
+- HF-0013 — Download Workspace Isolation;
+- HF-0014 — Registry Reconciliation & Production Recovery.
+
+Исторические пропуски и дублирование нумерации сохранены без ретроактивного переименования.
+
+---
+
+Last Updated:
+
+2026-08-20
+
+End of Document

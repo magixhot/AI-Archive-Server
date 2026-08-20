@@ -4,7 +4,7 @@ Project: AI Infrastructure
 
 Document ID: DOC-0001.4
 
-Version: 1.1
+Version: 1.0
 
 Status: Active
 
@@ -18,45 +18,45 @@ Status: Active
 - регистрации компонентов проекта;
 - хранения уникальных идентификаторов;
 - предотвращения дублирования идентификаторов;
-- навигации между Runtime-проектами и документацией;
-- фиксации официальных component identifiers;
-- сохранения исторической идентичности завершённых компонентов.
+- навигации между Runtime-проектами и документацией.
 
-Текущее operational state проекта определяется `CURRENT_STATUS.md`.
-
----
 
 # 2. Component Types
 
-## PROJECT
+PROJECT
 
-Документы и компоненты верхнего уровня проекта.
+Документы верхнего уровня проекта.
 
-## DOC
+
+DOC
 
 Документация проекта.
 
-## STD
+
+STD
 
 Стандарты проекта.
 
-## ADR
+
+ADR
 
 Архитектурные решения.
 
-## RT
+
+RT
 
 Runtime-проекты.
 
-## HF
 
-Исторические этапы реализации Runtime-проектов.
+HF
 
-## MD
+Этапы реализации Runtime-проектов.
+
+
+MD
 
 Реестр семейств AI-моделей.
 
----
 
 # 3. PROJECT Components
 
@@ -74,7 +74,6 @@ Description:
 
 Главный индекс проекта AI Infrastructure.
 
----
 
 # 4. Runtime Projects
 
@@ -90,14 +89,424 @@ Active
 
 Description:
 
-Автономный сервер acquisition, preservation, validation, reconciliation и хранения AI-моделей.
+Автономный сервер хранения AI-моделей.
 
-Current operational target:
 
-```text
-Synology DS925+
-Docker Compose
-automatic queue-driven model acquisition
-authoritative model archive
-Registry recovery
-production hardening
+## RT-0009
+
+Name:
+
+AI Runtime
+
+Status:
+
+Planned
+
+Description:
+
+Локальный запуск AI-моделей.
+
+
+## RT-0010
+
+Name:
+
+AI Deployment
+
+Status:
+
+Planned
+
+Description:
+
+Развёртывание AI-сервисов.
+
+
+## RT-0011
+
+Name:
+
+Automation System
+
+Status:
+
+Planned
+
+Description:
+
+Автоматизация обслуживания AI Infrastructure.
+
+
+# 5. HF Components
+
+## HF-0001
+
+Name:
+
+Hugging Face Client
+
+Status:
+
+Completed
+
+
+## HF-0002
+
+Name:
+
+Model Downloader
+
+Status:
+
+Completed
+
+
+## HF-0003
+
+Name:
+
+Metadata Layer
+
+Status:
+
+Completed
+
+
+## HF-0004
+
+Name:
+
+Archive Builder
+
+Status:
+
+Completed
+
+
+## HF-0005
+
+Name:
+
+Model Registry
+
+Status:
+
+Completed
+
+
+## HF-0006
+
+Name:
+
+Query API
+
+Status:
+
+Completed
+
+
+## HF-0007
+
+Name:
+
+Storage Layer
+
+Status:
+
+Completed
+
+
+## HF-0008
+
+Name:
+
+Model Cache
+
+Status:
+
+Completed
+
+
+## HF-0009
+
+Name:
+
+Integrity Checker
+
+Status:
+
+Completed
+
+
+## HF-0010
+
+Name:
+
+Archive Synchronization
+
+Status:
+
+Completed
+
+
+## HF-0011
+
+Name:
+
+Integrity Service Layer
+
+Status:
+
+Completed
+
+Description:
+
+Historical Git milestone.
+
+Verified sequence:
+
+- HF-0011.1 — add integrity service layer
+- HF-0011.2 — add integrity history storage
+- HF-0011.3 — auto save integrity history
+- HF-0011.4 — connect CLI to integrity service
+
+
+## HF-0012
+
+Name:
+
+Integrity Public API / Runtime Normalization
+
+Status:
+
+Completed
+
+Description:
+
+Historical Git milestone.
+
+Verified sequence includes:
+
+- HF-0012.2 — add latest integrity result reader
+- HF-0012.3 — add integrity public API
+- HF-0012.3 — add integrity statistics CLI
+- HF-0012.4 — normalize internal imports
+- HF-0012.5 — normalize runtime packaging
+
+Historical numbering is preserved exactly as recorded in Git.
+
+
+## HF-0013
+
+Name:
+
+Download Workspace Isolation
+
+Status:
+
+Completed
+
+Description:
+
+Historical Git milestone.
+
+Verified commit:
+
+- HF-0013.3 — isolate download workspace
+
+Historical gaps HF-0013.1 and HF-0013.2 are preserved and are not renumbered retroactively.
+
+
+## HF-0014
+
+Name:
+
+Registry Reconciliation & Production Recovery
+
+Status:
+
+In Progress
+
+Description:
+
+Current RT-0008 milestone.
+
+Scope:
+
+- authoritative archive reconciliation;
+- Registry bootstrap and migrations;
+- Queue Manager readiness gating;
+- duplicate model protection;
+- Download Worker failure handling;
+- explicit retry for FAILED models;
+- Registry error diagnostics;
+- retry lifecycle reset;
+- Synology restart recovery;
+- NAS reboot recovery;
+- remaining production failure hardening.
+
+
+# 6. Standards
+
+## STD-0001
+
+AI Model Archive Standard
+
+Status:
+
+Active
+
+
+## STD-0002
+
+AI Infrastructure Operating Manual
+
+Status:
+
+Active
+
+
+## STD-0003
+
+Project Documentation Standard
+
+Status:
+
+Planned
+
+
+## STD-0006
+
+Container Standards
+
+Status:
+
+Planned
+
+
+# 7. Architecture Decision Records
+
+## ADR-0001
+
+Docker Compose Standard
+
+Status:
+
+Accepted
+
+
+## ADR-0002
+
+Project Documentation Workflow
+
+Status:
+
+Accepted
+
+
+## ADR-0003
+
+Model Cache Responsibility
+
+Status:
+
+Accepted
+
+
+# 8. Documentation
+
+## DOC-0001
+
+Project Documentation Framework
+
+Status:
+
+Completed
+
+
+# 9. Model Registry
+
+## MD-0001
+
+Qwen
+
+
+## MD-0002
+
+Gemma
+
+
+## MD-0003
+
+Kimi
+
+
+## MD-0004
+
+DeepSeek
+
+
+## MD-0005
+
+Llama
+
+
+## MD-0006
+
+Mistral
+
+
+Status:
+
+Planned
+
+
+# 10. Identifier Rules
+
+Каждый идентификатор проекта:
+
+- является уникальным;
+- никогда не переиспользуется;
+- сохраняется даже после удаления компонента;
+- используется во всей документации проекта;
+- регистрируется в данном документе.
+
+
+# 11. Component Status Values
+
+Planned
+
+Компонент запланирован.
+
+
+In Progress
+
+Компонент находится в активной разработке.
+
+
+Active
+
+Компонент является действующей частью проекта.
+
+
+Completed
+
+Компонент полностью завершён.
+
+
+Accepted
+
+Архитектурное решение принято.
+
+
+Reserved
+
+Идентификатор зарезервирован для будущего использования.
+
+
+Deprecated
+
+Компонент больше не развивается, но сохраняется для совместимости и истории.
+
+
+End of Document
