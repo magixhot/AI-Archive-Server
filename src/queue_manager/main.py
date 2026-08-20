@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from src.model_registry.api import (
     register_model,
+    retry_model,
     list_models,
     find_model,
     list_families,
@@ -51,6 +52,15 @@ def add_model(
     return result
 
 
+
+@app.post("/models/{model_id:path}/retry")
+def retry_existing_model(
+    model_id: str,
+):
+
+    return retry_model(
+        model_id
+    )
 
 @app.get("/models")
 def get_models():

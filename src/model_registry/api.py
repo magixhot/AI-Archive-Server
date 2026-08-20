@@ -6,6 +6,7 @@ from .service import (
     get_model,
     get_families,
     model_exists,
+    retry_failed,
 )
 
 
@@ -64,6 +65,37 @@ def register_model(
     }
 
 
+
+def retry_model(
+    model_id: str,
+):
+
+    existing = get_model(
+        model_id
+    )
+
+    if existing is None:
+        return {
+            "model_id": model_id,
+            "retried": False,
+            "error": "Model not found",
+        }
+
+    if not retry_failed(
+        model_id
+    ):
+        return {
+            "model_id": model_id,
+            "status": existing["status"],
+            "retried": False,
+            "error": "Model is not FAILED",
+        }
+
+    return {
+        "model_id": model_id,
+        "status": "QUEUED",
+        "retried": True,
+    }
 
 def list_models():
 

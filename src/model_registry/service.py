@@ -488,3 +488,52 @@ def mark_failed(
     connection.commit()
 
     connection.close()
+
+def retry_failed(
+    model_id: str,
+) -> bool:
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT status
+        FROM models
+        WHERE model_id = ?
+        """,
+        (
+            model_id,
+        ),
+    )
+
+    row = cursor.fetchone()
+
+    if row is None:
+        connection.close()
+        return False
+
+    if row[0] != ModelStatus.FAILED.value:
+        connection.close()
+        return False
+
+    cursor.execute(
+        """
+        UPDATE models
+        SET
+            status = ?,
+            error_message = NULL
+        WHERE model_id = ?
+        """,
+        (
+            ModelStatus.QUEUED.value,
+            model_id,
+        ),
+    )
+
+    connection.commit()
+
+    connection.close()
+
+    return True
