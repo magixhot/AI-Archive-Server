@@ -9,6 +9,7 @@ from .registry_client import (
     update_model_status,
 )
 
+from src.model_registry.service import mark_failed
 from src.model_registry.states import ModelStatus
 
 
@@ -30,59 +31,76 @@ def process_queue():
                 f"Processing model: {model_id}"
             )
 
-            cached_archive = get_cached_archive(
-                model_id
-            )
+            try:
 
-            if cached_archive:
-
-                print(
-                    f"Using cached archive: {cached_archive}"
+                cached_archive = get_cached_archive(
+                    model_id
                 )
+
+                if cached_archive:
+
+                    print(
+                        f"Using cached archive: {cached_archive}"
+                    )
+
+                    update_model_status(
+                        model_id,
+                        ModelStatus.VALIDATED,
+                    )
+
+                    continue
 
                 update_model_status(
                     model_id,
-                    ModelStatus.VALIDATED,
+                    ModelStatus.DOWNLOADING,
                 )
 
-                continue
+                print(
+                    "Downloading model..."
+                )
 
-            update_model_status(
-                model_id,
-                ModelStatus.DOWNLOADING,
-            )
+                source_repository = download_repository(
+                    model_id,
+                    "data/downloads",
+                )
 
-            print(
-                "Downloading model..."
-            )
+                print(
+                    f"Downloaded to: {source_repository}"
+                )
 
-            source_repository = download_repository(
-                model_id,
-                "data/downloads",
-            )
+                model_info = {
+                    "version": model[3],
+                }
 
-            print(
-                f"Downloaded to: {source_repository}"
-            )
+                print(
+                    "Building archive..."
+                )
 
-            model_info = {
-                "version": model[3],
-            }
+                result = build_archive(
+                    model_id,
+                    source_repository,
+                    model_info,
+                )
 
-            print(
-                "Building archive..."
-            )
+                print(
+                    f"Archive created: {result['path']}"
+                )
 
-            result = build_archive(
-                model_id,
-                source_repository,
-                model_info,
-            )
+                print(
+                    f"Finished: {model_id}"
+                )
 
-            print(
-                f"Archive created: {result['path']}"
-            )
+            except Exception as error:
 
-            print(
-                f"Finished: {model_id}"
-            )
+                message = (
+                    f"{type(error).__name__}: {error}"
+                )
+
+                print(
+                    f"Failed: {model_id}: {message}"
+                )
+
+                mark_failed(
+                    model_id,
+                    message,
+                )
