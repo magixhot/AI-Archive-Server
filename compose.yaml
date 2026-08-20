@@ -2,6 +2,27 @@ name: ai-archive-server
 
 services:
 
+  registry-bootstrap:
+    build:
+      context: .
+      dockerfile: docker/queue-manager/Dockerfile
+
+    container_name: ai-archive-registry-bootstrap
+
+    restart: "no"
+
+    volumes:
+      - ./registry/data:/app/registry/data
+      - ./registry/schema.sql:/app/registry/schema.sql:ro
+      - ./registry/migrations:/app/registry/migrations:ro
+
+    command:
+      [
+        "python",
+        "-m",
+        "src.model_registry.bootstrap"
+      ]
+
   queue-manager:
     build:
       context: .
@@ -10,6 +31,10 @@ services:
     container_name: ai-archive-queue-manager
 
     restart: unless-stopped
+
+    depends_on:
+      registry-bootstrap:
+        condition: service_completed_successfully
 
     ports:
       - "8080:8080"
@@ -31,6 +56,10 @@ services:
     container_name: ai-archive-download-worker
 
     restart: unless-stopped
+
+    depends_on:
+      registry-bootstrap:
+        condition: service_completed_successfully
 
     volumes:
       - ./AI-Archive:/app/AI-Archive
