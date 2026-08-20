@@ -20,6 +20,7 @@ services:
       - ./logs:/app/logs
       - ./config:/app/config
       - ./registry/data:/app/registry/data
+      - /volume3/AI_Infrastructure/02_Models:/app/02_Models:ro
 
 
   download-worker:
@@ -37,3 +38,4 @@ services:
       - ./logs:/app/logs
       - ./config:/app/config
       - ./registry/data:/app/registry/data
+      - /volume3/AI_Infrastructure/02_Models:/app/02_Models:ro
