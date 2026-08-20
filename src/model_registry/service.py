@@ -503,7 +503,9 @@ def retry_failed(
         UPDATE models
         SET
             status = ?,
-            error_message = NULL
+            error_message = NULL,
+            download_started = NULL,
+            download_finished = NULL
         WHERE model_id = ?
         """,
         (
