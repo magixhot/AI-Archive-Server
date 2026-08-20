@@ -23,6 +23,7 @@ services:
         "src.model_registry.bootstrap"
       ]
 
+
   queue-manager:
     build:
       context: .
@@ -38,6 +39,19 @@ services:
 
     ports:
       - "8080:8080"
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
     volumes:
       - ./AI-Archive:/app/AI-Archive
@@ -60,6 +74,8 @@ services:
     depends_on:
       registry-bootstrap:
         condition: service_completed_successfully
+      queue-manager:
+        condition: service_healthy
 
     volumes:
       - ./AI-Archive:/app/AI-Archive
