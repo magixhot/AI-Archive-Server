@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 
 def workspace_path(model_id: str, destination: str) -> Path:
@@ -29,10 +30,16 @@ def workspace_path(model_id: str, destination: str) -> Path:
     if ".." in model_id:
         raise ValueError(f"model_id contains path traversal: {model_id}")
 
-    if "/" in model_id:
-        workspace_name = model_id.replace("/", "--")
-    else:
-        workspace_name = model_id
+    if model_id.startswith("/") or "\\" in model_id:
+        raise ValueError(f"model_id contains unsafe characters: {model_id}")
 
-    workspace = Path(destination) / workspace_name
+    if "/" not in model_id:
+        raise ValueError(
+            f"model_id must contain namespace/repository format: {model_id}"
+        )
+
+    if not re.match(r"^[A-Za-z0-9._/-]+$", model_id):
+        raise ValueError(f"model_id contains invalid characters: {model_id}")
+
+    workspace = Path(destination) / model_id
     return workspace
