@@ -12,9 +12,25 @@
 
 # Current HF
 
-На данный момент активный HF-этап не назначен.
+## HF-0015 — Download Workspace Identity & Collision Safety
 
-Последний завершённый этап:
+**Status:** IN PROGRESS
+
+Goal:
+
+Make transient download workspace identity-safe for full `model_id` / `repo_id` while preserving retry/resume behavior and existing partial workspace data.
+
+Scope:
+
+- eliminate collisions between repositories with the same model name;
+- derive workspace identity from full model ID;
+- preserve existing partial workspace data;
+- preserve explicit retry/resume semantics;
+- prevent path traversal or unsafe workspace paths;
+- add collision-focused automated tests;
+- verify Docker Compose runtime behavior and CI.
+
+Previous completed milestone:
 
 ## HF-0014 — Registry Reconciliation & Production Recovery
 
@@ -242,16 +258,24 @@ If Registry already contains models, startup recovery does not modify Registry r
 
 # Next Task
 
-Следующий HF-этап пока не назначен.
+## HF-0015 — Download Workspace Identity & Collision Safety
 
-Перед началом нового Runtime development milestone необходимо:
+**Status:** IN PROGRESS
 
-1. завершить документационное закрытие HF-0014;
-2. зафиксировать документацию отдельным Git commit;
-3. убедиться, что CI остаётся зелёным;
-4. определить следующий HF в соответствии с ROADMAP и актуальными приоритетами RT-0008.
+Current implementation risk:
 
-Новый HF не должен создаваться только ради продолжения нумерации.
+`download_repository()` currently derives the workspace directory only from the final model-name segment of `model_id`.
+
+Two repositories such as:
+
+```text
+owner-a/shared-model
+owner-b/shared-model
+```
+
+can therefore target the same transient workspace.
+
+HF-0015 will remove this collision risk without destructive cleanup of existing partial downloads.
 
 ---
 

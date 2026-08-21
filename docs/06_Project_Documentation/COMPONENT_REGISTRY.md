@@ -346,6 +346,31 @@ Scope:
 - controlled Registry-loss recovery without redownload;
 
 
+## HF-0015
+
+Name:
+
+Download Workspace Identity & Collision Safety
+
+Status:
+
+In Progress
+
+Description:
+
+Current RT-0008 milestone.
+
+Scope:
+
+- full model identity for transient download workspace;
+- collision prevention for equal repository names in different namespaces;
+- preservation of retry/resume semantics;
+- preservation of existing partial workspace data;
+- safe workspace path construction;
+- automated collision tests;
+- Docker Compose and CI verification.
+
+
 # 6. Standards
 
 ## STD-0001
