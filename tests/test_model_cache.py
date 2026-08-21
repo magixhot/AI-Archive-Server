@@ -7,7 +7,7 @@ from src.storage.cache import get_cached_archive
 
 
 def _write_archive(root: Path, model_id: str = "Qwen/Qwen3-0.6B") -> Path:
-    family, model_name = model_id.split("/")
+    family, model_name = model_id.split("/", 1)
     model_path = root / family / model_name
     repository = model_path / "repository"
     metadata = model_path / "metadata"
