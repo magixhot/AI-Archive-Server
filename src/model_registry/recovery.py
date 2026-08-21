@@ -8,6 +8,7 @@ from src.model_registry.bootstrap import bootstrap_registry
 from src.model_registry.models import ModelRecord
 from src.model_registry.service import (
     add_model,
+    get_all_models,
     mark_archive_created,
     model_exists,
     update_model_metadata,
@@ -149,6 +150,15 @@ def recover_registry(
     managed_archive_root: str | Path = MANAGED_ARCHIVE_ROOT,
 ) -> RecoveryResult:
     bootstrap_registry()
+
+    existing_models = get_all_models()
+
+    if existing_models:
+        return RecoveryResult(
+            skipped=[
+                "registry already contains models"
+            ]
+        )
 
     result = RecoveryResult()
 

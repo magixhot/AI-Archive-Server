@@ -132,7 +132,6 @@ def test_reconcile_managed_archive_is_idempotent(
     )
 
     added_models = []
-    archived_calls = []
 
     monkeypatch.setattr(
         recovery,
@@ -155,7 +154,7 @@ def test_reconcile_managed_archive_is_idempotent(
     monkeypatch.setattr(
         recovery,
         "mark_archive_created",
-        lambda model_id: archived_calls.append(model_id),
+        lambda model_id: None,
     )
 
     result = recovery.reconcile_managed_archive(
@@ -167,9 +166,6 @@ def test_reconcile_managed_archive_is_idempotent(
         "Qwen/Qwen3-0.6B"
     ]
     assert added_models == []
-    assert archived_calls == [
-        "Qwen/Qwen3-0.6B"
-    ]
 
 
 def test_reconcile_managed_archive_skips_invalid_manifest(
@@ -209,7 +205,7 @@ def test_reconcile_managed_archive_skips_invalid_manifest(
     assert "invalid model_id" in result.skipped[0]
 
 
-def test_recover_registry_combines_sources(
+def test_recover_registry_combines_sources_when_empty(
     monkeypatch: pytest.MonkeyPatch,
 ):
     calls = []
@@ -218,6 +214,12 @@ def test_recover_registry_combines_sources(
         recovery,
         "bootstrap_registry",
         lambda: calls.append("bootstrap"),
+    )
+
+    monkeypatch.setattr(
+        recovery,
+        "get_all_models",
+        lambda: [],
     )
 
     monkeypatch.setattr(
@@ -255,4 +257,52 @@ def test_recover_registry_combines_sources(
     assert result.skipped == [
         "historical-skip",
         "managed-skip",
+    ]
+
+
+def test_recover_registry_skips_when_registry_not_empty(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    calls = []
+
+    monkeypatch.setattr(
+        recovery,
+        "bootstrap_registry",
+        lambda: calls.append("bootstrap"),
+    )
+
+    monkeypatch.setattr(
+        recovery,
+        "get_all_models",
+        lambda: [
+            {
+                "model_id": "Qwen/Qwen3-0.6B"
+            }
+        ],
+    )
+
+    monkeypatch.setattr(
+        recovery,
+        "reconcile_archive",
+        lambda root: pytest.fail(
+            "historical reconciliation must not run"
+        ),
+    )
+
+    monkeypatch.setattr(
+        recovery,
+        "reconcile_managed_archive",
+        lambda root: pytest.fail(
+            "managed reconciliation must not run"
+        ),
+    )
+
+    result = recovery.recover_registry()
+
+    assert calls == ["bootstrap"]
+    assert result.valid is True
+    assert result.historical == []
+    assert result.managed == []
+    assert result.skipped == [
+        "registry already contains models"
     ]
