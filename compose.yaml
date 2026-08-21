@@ -15,12 +15,14 @@ services:
       - ./registry/data:/app/registry/data
       - ./registry/schema.sql:/app/registry/schema.sql:ro
       - ./registry/migrations:/app/registry/migrations:ro
+      - ./AI-Archive:/app/AI-Archive:ro
+      - /volume3/AI_Infrastructure/02_Models:/app/02_Models:ro
 
     command:
       [
         "python",
         "-m",
-        "src.model_registry.bootstrap"
+        "src.model_registry.recovery"
       ]
 
 
