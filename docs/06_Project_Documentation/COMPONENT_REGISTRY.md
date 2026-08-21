@@ -354,11 +354,11 @@ Download Workspace Identity & Collision Safety
 
 Status:
 
-In Progress
+Completed
 
 Description:
 
-Current RT-0008 milestone.
+Completed RT-0008 workspace identity milestone.
 
 Scope:
 

@@ -317,6 +317,32 @@ Final production wiring commit:
 
 ---
 
+# 2026-08-21
+
+## HF-0015 — Download Workspace Identity & Collision Safety
+
+Status:
+
+Completed
+
+Завершён milestone collision safety для transient download workspace.
+
+Подтверждено:
+
+- workspace identity derived from canonical `namespace/repository` format;
+- different namespaces produce different workspace paths;
+- path traversal and unsafe model IDs rejected;
+- legacy basename-only workspaces preserved and not reused;
+- 20 collision/safety tests;
+- full pytest suite (56 tests) passing;
+- GitHub Actions CI validation;
+- NAS Docker Compose rebuild and runtime verification;
+- workspace_path behavior confirmed inside runtime container;
+- Queue Manager health endpoint healthy;
+- Download Worker startup and polling verified.
+
+---
+
 Last Updated:
 
 2026-08-21

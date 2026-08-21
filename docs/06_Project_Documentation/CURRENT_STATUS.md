@@ -14,7 +14,10 @@
 
 ## HF-0015 — Download Workspace Identity & Collision Safety
 
-**Status:** IN PROGRESS
+**Status:** COMPLETED
+
+Completed:
+2026-08-21
 
 Goal:
 
@@ -30,7 +33,22 @@ Scope:
 - add collision-focused automated tests;
 - verify Docker Compose runtime behavior and CI.
 
-Previous completed milestone:
+Verified:
+
+- workspace identity derived from canonical `namespace/repository` format;
+- different namespaces produce different workspace paths;
+- same model_id maps deterministically to the same workspace path;
+- path traversal, backslash, empty, malformed model IDs are rejected;
+- legacy basename-only workspaces preserved and not reused;
+- 20 collision/safety tests passing;
+- full pytest suite (56 tests) passing;
+- GitHub Actions CI validation;
+- NAS Docker Compose rebuild and restart verification;
+- workspace_path behavior confirmed inside runtime container;
+- Queue Manager health endpoint healthy;
+- Download Worker startup and polling verified;
+- legacy workspaces present and unchanged;
+- archive data untouched.
 
 ## HF-0014 — Registry Reconciliation & Production Recovery
 
@@ -258,32 +276,20 @@ If Registry already contains models, startup recovery does not modify Registry r
 
 # Next Task
 
-## HF-0015 — Download Workspace Identity & Collision Safety
+HF-0015 is completed. Next HF to be defined in a future session.
 
-**Status:** IN PROGRESS
+---
 
-Current implementation risk:
+# Historical HF Sequence
 
-`download_repository()` currently derives the workspace directory only from the final model-name segment of `model_id`.
+Verified historical sequence:
 
-Two repositories such as:
-
-```text
-owner-a/shared-model
-owner-b/shared-model
-```
-
-can therefore target the same transient workspace.
-
-HF-0015 will remove this collision risk without destructive cleanup of existing partial downloads.
-
-### Legacy Workspace Compatibility Policy
-
-Old basename-only workspaces (e.g. `data/downloads/Qwen3-0.6B`) are preserved on disk but are NOT automatically reused or migrated because their namespace provenance is ambiguous.
-
-This is intentional safety behavior, not a cleanup task.
-
-New canonical workspace paths are structured as `data/downloads/<namespace>/<repository>`.
+- HF-0010.x — Integrity verification pipeline;
+- HF-0011.1–HF-0011.4 — Integrity service / history / CLI integration;
+- HF-0012.2–HF-0012.5 — Integrity public API / statistics / runtime normalization;
+- HF-0013.3 — Isolated download workspace;
+- HF-0014 — Registry Reconciliation & Production Recovery;
+- HF-0015 — Download Workspace Identity & Collision Safety.
 
 ---
 
