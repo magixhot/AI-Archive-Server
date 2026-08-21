@@ -6,35 +6,98 @@
 
 **Status:** IN PROGRESS
 
-Разработка продолжается согласно ROADMAP.
+Разработка RT-0008 продолжается согласно ROADMAP.
 
 ---
 
 # Current HF
 
+На данный момент активный HF-этап не назначен.
+
+Последний завершённый этап:
+
 ## HF-0014 — Registry Reconciliation & Production Recovery
 
-**Status:** IN PROGRESS
+**Status:** COMPLETED
 
-Historical milestone reconciliation completed.
+Completed:
+2026-08-21
+
+HF-0014 завершил production hardening Registry recovery и Synology runtime recovery.
+
+---
+
+# HF-0014 Verified Results
+
+Подтверждено:
+
+- authoritative archive reconciliation;
+- Registry bootstrap and migrations;
+- automatic Registry recovery after loss of `registry.db`;
+- recovery from historical authoritative archive `/app/02_Models`;
+- recovery from managed archive `/app/AI-Archive/models`;
+- no automatic reconciliation when Registry already contains models;
+- no accidental downgrade of existing VALIDATED records during normal restart;
+- recovery without repeated Hugging Face download;
+- Queue Manager readiness gating;
+- Download Worker startup only after Queue Manager health;
+- duplicate model protection;
+- Download Worker failure isolation;
+- persistent FAILED diagnostics;
+- explicit retry lifecycle;
+- retry metadata reset;
+- retained partial download workspace;
+- Container Manager restart recovery;
+- full NAS reboot recovery;
+- successful controlled Registry-loss recovery test;
+- GitHub Actions CI validation.
+
+Controlled Registry-loss test restored:
+
+- `Qwen/Qwen3-0.6B`;
+- `Qwen/Qwen3-30B-A3B-Instruct-2507`;
+- `google/gemma-3-27b-it`;
+- `moonshotai/Kimi-K2-Instruct`.
+
+Recovered archive records are restored conservatively as:
+
+```text
+ARCHIVED
+```
+
+They are not automatically promoted to:
+
+```text
+VALIDATED
+```
+
+because validation state must not be invented after Registry loss.
+
+Latest production recovery wiring commit:
+
+```text
+5aada76 Enable_automatic_registry_recovery
+```
+
+GitHub Actions result:
+
+```text
+completed / success
+```
+
+---
+
+# Historical HF Sequence
 
 Verified historical sequence:
 
-- HF-0010.x — Integrity verification pipeline
-- HF-0011.1–HF-0011.4 — Integrity service / history / CLI integration
-- HF-0012.2–HF-0012.5 — Integrity public API / statistics / runtime normalization
-- HF-0013.3 — Isolated download workspace
+- HF-0010.x — Integrity verification pipeline;
+- HF-0011.1–HF-0011.4 — Integrity service / history / CLI integration;
+- HF-0012.2–HF-0012.5 — Integrity public API / statistics / runtime normalization;
+- HF-0013.3 — Isolated download workspace;
+- HF-0014 — Registry Reconciliation & Production Recovery.
 
 Historical numbering gaps and duplicate numbering are preserved exactly as recorded in Git.
-
-Current scope:
-
-- authoritative archive reconciliation;
-- Registry bootstrap and recovery;
-- Synology runtime reliability;
-- failure handling;
-- retry semantics;
-- production hardening.
 
 ---
 
@@ -53,7 +116,7 @@ Current scope:
 - PROJECT_MAP.md
 - ROADMAP.md
 
-### In Review
+### Maintained Project Documentation
 
 - CURRENT_STATUS.md
 - FILE_INDEX.md
@@ -63,6 +126,7 @@ Current scope:
 - DECISIONS.md
 - ENGINEERING_WORKFLOW.md
 - CHANGELOG.md
+- COMPONENT_REGISTRY.md
 
 ---
 
@@ -100,13 +164,33 @@ Current scope:
 
 **Status:** COMPLETED
 
+### HF-0009 — Integrity Checker
+
+**Status:** COMPLETED
+
 ### HF-0010 — Synchronization
+
+**Status:** COMPLETED
+
+### HF-0011 — Integrity Service Layer
+
+**Status:** COMPLETED
+
+### HF-0012 — Integrity Public API / Runtime Normalization
+
+**Status:** COMPLETED
+
+### HF-0013 — Download Workspace Isolation
+
+**Status:** COMPLETED
+
+### HF-0014 — Registry Reconciliation & Production Recovery
 
 **Status:** COMPLETED
 
 ---
 
-## Implemented Components
+# Implemented Components
 
 - Hugging Face Client
 - Queue Manager
@@ -115,68 +199,59 @@ Current scope:
 - Registry
 - SQLite Registry
 - Model Cache
+- Integrity Layer
 - Registry Synchronization
+- Registry Bootstrap
+- Registry Recovery
+- Authoritative Archive Reconciliation
 - Docker Compose
 - REST API
+- GitHub Actions CI
 - Real model downloading via `huggingface_hub`
 
 ---
 
-# Current Architecture
+# Current Runtime Startup Architecture
 
 ```text
-             Model Cache
-                  │
-        ┌─────────┴─────────┐
-        │                   │
-   cache hit          cache miss
-        │                   │
-        ▼                   ▼
-    Local Storage      HF Client
-                            │
-                            ▼
-                       Downloader
-                            │
-                            ▼
-                     Archive Builder
-                            │
-                            ▼
-                         Registry
-                            │
-                            ▼
-                      Local Storage
-                            │
-                            ▼
-                         REST API
-                            │
-                            ▼
-                            CLI
+registry-bootstrap
+        │
+        ├── schema
+        ├── migrations
+        └── Registry recovery when Registry is empty
+                 │
+                 ├── historical archive
+                 │      /app/02_Models
+                 │
+                 └── managed archive
+                        /app/AI-Archive/models
+        │
+        ▼
+queue-manager
+        │
+        ▼
+healthcheck = healthy
+        │
+        ▼
+download-worker
 ```
 
-Архитектурная цепочка считается рабочей.
+If Registry already contains models, startup recovery does not modify Registry records.
 
 ---
 
 # Next Task
 
-## HF-0014 — Registry Reconciliation & Production Recovery
+Следующий HF-этап пока не назначен.
 
-**Status:** IN PROGRESS
+Перед началом нового Runtime development milestone необходимо:
 
-### Goal
+1. завершить документационное закрытие HF-0014;
+2. зафиксировать документацию отдельным Git commit;
+3. убедиться, что CI остаётся зелёным;
+4. определить следующий HF в соответствии с ROADMAP и актуальными приоритетами RT-0008.
 
-Завершить production hardening Registry recovery и runtime recovery на Synology.
-
-HF-0014 должен обеспечивать:
-
-- автоматическую сверку Registry и authoritative archive;
-- восстановление после удаления `registry.db`;
-- восстановление после переноса архива;
-- восстановление после восстановления из резервной копии;
-- повторную регистрацию моделей без повторного скачивания;
-- корректную обработку FAILED downloads;
-- явный retry lifecycle;
-- устойчивый запуск после restart и NAS reboot.
+Новый HF не должен создаваться только ради продолжения нумерации.
 
 ---
 
@@ -189,4 +264,4 @@ HF-0014 должен обеспечивать:
 ---
 
 Last Updated:
-2026-08-20
+2026-08-21

@@ -60,6 +60,11 @@ __init__.py
 ```
 service.py
     Registry business logic
+recovery.py
+    Registry recovery orchestration for empty Registry startup
+
+bootstrap.py
+    Registry schema initialization and migration bootstrap
 
 database.py
     SQLite access
@@ -159,7 +164,7 @@ migrate.py
 ## docker/
 
 ```
-docker-compose.yml
+compose.yaml
 
 download-worker/
     Dockerfile
@@ -223,6 +228,6 @@ AI Infrastructure
 
 Last Updated:
 
-2026-07-29
+2026-08-21
 
 End of Document

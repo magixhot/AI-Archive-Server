@@ -325,11 +325,11 @@ Registry Reconciliation & Production Recovery
 
 Status:
 
-In Progress
+Completed
 
 Description:
 
-Current RT-0008 milestone.
+Completed RT-0008 production recovery milestone.
 
 Scope:
 
@@ -343,7 +343,7 @@ Scope:
 - retry lifecycle reset;
 - Synology restart recovery;
 - NAS reboot recovery;
-- remaining production failure hardening.
+- controlled Registry-loss recovery without redownload;
 
 
 # 6. Standards

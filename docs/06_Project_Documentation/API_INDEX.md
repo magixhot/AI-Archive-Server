@@ -229,6 +229,24 @@ Status: Active
 
 ---
 
+## recover_registry(...)
+
+Назначение:
+
+Production recovery orchestration для пустой Registry.
+
+Выполняет bootstrap, проверяет наличие существующих записей и запускает reconciliation только если Registry пуста.
+
+---
+
+## reconcile_managed_archive(...)
+
+Назначение:
+
+Восстановление Registry records из managed archive AI-Archive/models без повторной загрузки моделей.
+
+---
+
 ## reconcile_archive(...)
 
 Назначение:
@@ -289,6 +307,6 @@ Status: Active
 
 Last Updated:
 
-2026-08-20
+2026-08-21
 
 End of Document

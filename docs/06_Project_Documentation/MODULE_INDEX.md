@@ -501,6 +501,9 @@ Responsibilities:
 - record migration state;
 - safely skip already applied migrations;
 - support idempotent repeated startup.
+- invoke Registry recovery orchestration after bootstrap;
+- skip reconciliation when Registry already contains models;
+- restore archive-backed records from historical and managed authoritative storage when Registry is empty.
 
 Queue Manager starts only after bootstrap completes successfully.
 
@@ -645,6 +648,17 @@ Runtime configuration must remain reproducible from repository-controlled files.
 ---
 
 # 15. Recovery Behavior
+
+Registry recovery is orchestrated by src/model_registry/recovery.py.
+
+When Registry is empty, recovery reconciles:
+
+- /app/02_Models historical authoritative archive;
+- /app/AI-Archive/models managed archive.
+
+Recovered records are restored conservatively as ARCHIVED and are not automatically promoted to VALIDATED.
+
+When Registry already contains models, recovery exits without modifying existing records.
 
 The current Runtime architecture has been verified across:
 
@@ -817,6 +831,6 @@ Model Registry
 
 Last Updated:
 
-2026-08-20
+2026-08-21
 
 End of Document

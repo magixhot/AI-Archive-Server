@@ -265,7 +265,7 @@ Completed
 
 ---
 
-# 2026-08-20
+# 2026-08-21
 
 ## HF Milestone Reconciliation
 
@@ -286,8 +286,39 @@ Completed
 
 ---
 
+# 2026-08-21
+
+## HF-0014 — Registry Reconciliation & Production Recovery
+
+Status:
+
+Completed
+
+Завершён production recovery milestone для RT-0008.
+
+Подтверждено:
+
+- automatic Registry recovery after loss of registry.db;
+- reconciliation from historical and managed authoritative archives;
+- nonempty Registry recovery guard;
+- recovery without repeated model download;
+- Queue Manager readiness gating;
+- Download Worker failure isolation;
+- persistent FAILED diagnostics;
+- explicit retry lifecycle;
+- Container Manager restart recovery;
+- NAS reboot recovery;
+- successful controlled Registry-loss recovery test;
+- GitHub Actions CI validation.
+
+Final production wiring commit:
+
+5aada76 Enable_automatic_registry_recovery
+
+---
+
 Last Updated:
 
-2026-08-20
+2026-08-21
 
 End of Document
