@@ -277,6 +277,14 @@ can therefore target the same transient workspace.
 
 HF-0015 will remove this collision risk without destructive cleanup of existing partial downloads.
 
+### Legacy Workspace Compatibility Policy
+
+Old basename-only workspaces (e.g. `data/downloads/Qwen3-0.6B`) are preserved on disk but are NOT automatically reused or migrated because their namespace provenance is ambiguous.
+
+This is intentional safety behavior, not a cleanup task.
+
+New canonical workspace paths are structured as `data/downloads/<namespace>/<repository>`.
+
 ---
 
 # Development Rule
