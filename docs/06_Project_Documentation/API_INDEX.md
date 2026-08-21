@@ -201,6 +201,27 @@ Status: Active
 
 ---
 
+## workspace_path(model_id, destination)
+
+Назначение:
+
+Вычисление пути к transient download workspace для модели.
+
+Использует полный Hugging Face model_id (`namespace/repository`)
+для предотвращения коллизий между разными пространствами имён.
+
+Возвращает:
+
+`Path` — путь к каталогу workspace.
+
+Raises:
+
+`ValueError` — если model_id пуст, содержит path traversal,
+"structural anomalies" или не соответствует формату
+`namespace/repository`.
+
+---
+
 # 8. Registry Client API
 
 ## get_queued_models()

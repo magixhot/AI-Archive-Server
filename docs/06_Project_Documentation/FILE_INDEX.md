@@ -47,6 +47,9 @@ client.py
 downloader.py
     Repository download implementation
 
+workspace.py
+    Transient download workspace identity and path safety
+
 models.py
     HF data models
 

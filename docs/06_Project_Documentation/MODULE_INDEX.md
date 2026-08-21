@@ -230,21 +230,39 @@ Purpose:
 
 Transient workspace used during repository acquisition.
 
+Workspace identity is derived from the full Hugging Face model ID
+(`namespace/repository`) to prevent collisions between repositories
+with the same model name in different namespaces.
+
 Properties:
 
 - may contain incomplete downloads;
 - may remain after failed acquisition;
 - may be reused by a later explicit retry;
 - is not authoritative storage;
-- must not be interpreted as a valid archive solely because a directory exists.
+- must not be interpreted as a valid archive solely because a directory exists;
+- old basename-only workspaces (e.g. `data/downloads/Qwen3-0.6B`) are preserved
+  but not automatically reused or migrated.
 
-Example:
+Canonical workspace path format:
+
+```text
+data/downloads/<namespace>/<repository>/
+```
+
+Legacy workspace path (preserved, not reused):
 
 ```text
 data/downloads/<model-name>/
 ```
 
 Partial workspace retention is intentional.
+
+Identity and path safety are implemented in:
+
+```text
+src/hf_client/workspace.py
+```
 
 ---
 
