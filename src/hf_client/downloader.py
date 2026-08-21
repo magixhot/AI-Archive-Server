@@ -1,6 +1,6 @@
-from pathlib import Path
-
 from huggingface_hub import snapshot_download
+
+from src.hf_client.workspace import workspace_path
 
 
 def download_repository(
@@ -17,12 +17,7 @@ def download_repository(
     was downloaded.
     """
 
-    model_name = model_id.split("/")[-1]
-
-    download_path = (
-        Path(destination)
-        / model_name
-    )
+    download_path = workspace_path(model_id, destination)
 
     download_path.mkdir(
         parents=True,
