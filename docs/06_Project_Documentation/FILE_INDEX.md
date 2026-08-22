@@ -28,6 +28,7 @@ config/         Configuration files
 data/           Archive storage
 docker/         Docker configuration
 docs/           Project documentation
+automation/     Local agent bootstrap scripts
 logs/           Logs
 registry/       SQLite registry and migrations
 scripts/        Utility scripts
@@ -182,6 +183,35 @@ migrate.py
 
 ---
 
+# 6. Automation
+
+## automation/
+
+```
+bootstrap.sh
+    Portable bootstrap installer (idempotent)
+
+worker-bridge.sh
+    OpenCode Worker Bridge process
+
+supervisor.sh
+    OpenCode Supervisor with restart logic
+
+watchdog.sh
+    Health check / timeout monitor
+
+notify.sh
+    Windows/Linux/macOS notification helper
+
+check.sh
+    Dry-run validation / prerequisite check
+
+templates/
+    systemd --user service and timer templates
+```
+
+---
+
 # 6. Docker
 
 ## docker/
@@ -225,6 +255,7 @@ DECISIONS.md
 ENGINEERING_WORKFLOW.md
 CHANGELOG.md
 MASTER_INDEX.md
+LOCAL_AGENT_INSTALLATION.md
 ```
 
 ---
@@ -234,6 +265,7 @@ MASTER_INDEX.md
 ```
 AI Infrastructure
 │
+├── automation/
 ├── config/
 ├── data/
 ├── docker/

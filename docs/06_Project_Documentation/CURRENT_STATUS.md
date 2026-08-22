@@ -12,6 +12,15 @@
 
 # Current HF
 
+## HF-0018 — Portable Local Agent Bootstrap
+
+**Status:** IN PROGRESS
+
+Started:
+2026-08-22
+
+---
+
 ## HF-0017 — Model Metadata Refresh & Upstream Revision Tracking
 
 **Status:** COMPLETED
@@ -344,11 +353,47 @@ If Registry already contains models, startup recovery does not modify Registry r
 
 ---
 
-# Next Task
+# Current Task
 
-HF-0017 — Model Metadata Refresh & Upstream Revision Tracking is completed.
+HF-0018 — Portable Local Agent Bootstrap is IN PROGRESS.
 
-Next HF to be defined in a future session.
+---
+
+## HF-0018 — Portable Local Agent Bootstrap
+
+**Status:** IN PROGRESS
+
+Goal:
+
+Create a portable, documented bootstrap framework for the local OpenCode Worker/Supervisor automation so the same engineering loop can be installed safely on another Windows + WSL computer with minimal manual steps and without machine-specific absolute paths.
+
+Scope:
+
+- portable bootstrap shell script with prerequisite checks;
+- OpenCode Worker bridge script;
+- OpenCode Supervisor script;
+- systemd --user service and timer templates;
+- watchdog/timeout script;
+- Windows notification helper;
+- project working-directory discovery;
+- GitHub CLI prerequisite/auth checks;
+- OpenCode prerequisite/version check;
+- SSH alias/prerequisite checks for ai-nas;
+- dry-run/check mode for validation;
+- automated tests for bootstrap logic (CI-safe);
+- second-computer installation procedure documentation;
+- idempotent installation behavior;
+- portable paths derived from HOME, script location, repository root.
+
+Rules:
+
+- never commit GitHub tokens, private SSH keys, passwords, or auth material;
+- bootstrap may verify presence and explain missing prerequisites but must not invent/copy secrets;
+- paths must derive from HOME, script location, repository root, or configuration variables;
+- no hard-coded Windows profile paths or computer names;
+- idempotent rerunning must not duplicate units/configuration or damage existing state;
+- NAS access only for non-destructive prerequisite checks if explicitly useful;
+- production-destructive NAS actions are forbidden.
 
 ---
 
@@ -363,7 +408,8 @@ Verified historical sequence:
 - HF-0014 — Registry Reconciliation & Production Recovery;
 - HF-0015 — Download Workspace Identity & Collision Safety;
 - HF-0016 — Archive Automation Scheduler;
-- HF-0017 — Model Metadata Refresh & Upstream Revision Tracking.
+- HF-0017 — Model Metadata Refresh & Upstream Revision Tracking;
+- HF-0018 — Portable Local Agent Bootstrap.
 
 ---
 

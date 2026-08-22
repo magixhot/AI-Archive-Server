@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenCode Worker Bridge Timer — AI Archive Server
+
+[Timer]
+OnBootSec=60s
+OnUnitActiveSec=600s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

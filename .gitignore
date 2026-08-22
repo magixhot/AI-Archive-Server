@@ -116,3 +116,10 @@ AI-Archive/integrity/history/
 # =========================
 
 *.egg-info/
+
+# =========================
+# HF-0018 automation state
+# =========================
+
+.automation/state/
+.automation/lock/

@@ -1,0 +1,11 @@
+[Unit]
+Description=OpenCode Watchdog — AI Archive Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@@REPO_ROOT@@
+ExecStart=@@REPO_ROOT@@/automation/watchdog.sh
+Environment=AI_ARCHIVE_ROOT=@@REPO_ROOT@@
+Environment=HOME=@@HOME@@

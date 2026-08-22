@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenCode Supervisor Timer — AI Archive Server
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=3600s
+Persistent=true
+
+[Install]
+WantedBy=timers.target
