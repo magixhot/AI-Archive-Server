@@ -257,11 +257,38 @@ Completed
 
 Последнее зарегистрированное событие:
 
-HF-0017 — Model Metadata Refresh & Upstream Revision Tracking
+HF-0018 — Portable Local Agent Bootstrap
 
 Status:
 
 Completed
+
+---
+
+# 2026-08-22
+
+## HF-0018 — Portable Local Agent Bootstrap
+
+Status:
+
+Completed
+
+Завершён milestone портируемого bootstrap фреймворка для локальной автоматизации OpenCode.
+
+Реализовано:
+
+- portable bootstrap shell script с проверкой зависимостей;
+- OpenCode Worker Bridge скрипт с управлением PID;
+- OpenCode Supervisor с ограничением перезапусков;
+- watchdog/timeout скрипт для проверки здоровья;
+- Windows/Linux/macOS notification helper;
+- dry-run/check режим для валидации;
+- systemd --user service и timer шаблоны;
+- 30 автоматических тестов (CI-safe);
+- документация установки на второй компьютер;
+- идемпотентное поведение при повторном запуске;
+- portable пути из HOME, расположения скрипта или корня репозитория;
+- GitHub Actions CI валидация.
 
 ---
 
