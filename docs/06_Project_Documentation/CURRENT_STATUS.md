@@ -14,7 +14,10 @@
 
 ## HF-0017 — Model Metadata Refresh & Upstream Revision Tracking
 
-**Status:** IN PROGRESS
+**Status:** COMPLETED
+
+Completed:
+2026-08-22
 
 Goal:
 
@@ -343,7 +346,9 @@ If Registry already contains models, startup recovery does not modify Registry r
 
 # Next Task
 
-HF-0017 — Model Metadata Refresh & Upstream Revision Tracking is IN PROGRESS.
+HF-0017 — Model Metadata Refresh & Upstream Revision Tracking is completed.
+
+Next HF to be defined in a future session.
 
 ---
 

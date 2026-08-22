@@ -257,7 +257,7 @@ Completed
 
 Последнее зарегистрированное событие:
 
-HF-0016 — Archive Automation Scheduler
+HF-0017 — Model Metadata Refresh & Upstream Revision Tracking
 
 Status:
 
@@ -366,6 +366,33 @@ Completed
 - GitHub Actions CI validation;
 - NAS Docker Compose rebuild и restart verification;
 - scheduler container выполняет задачи в runtime.
+
+---
+
+# 2026-08-22
+
+## HF-0017 — Model Metadata Refresh & Upstream Revision Tracking
+
+Status:
+
+Completed
+
+Завершён milestone обновления метаданных моделей и отслеживания upstream-ревизий.
+
+Реализовано:
+
+- provenance metadata contract для отслеживания upstream revision;
+- Registry schema migration для upstream revision columns;
+- metadata refresh service для безопасных неинвазивных upstream-запросов;
+- provenance.json sidecar-файл для каждой архивной модели;
+- scheduler integration для периодического обновления метаданных;
+- automated tests для revision resolution, unchanged metadata, changed-upstream detection, offline behavior, malformed IDs, и Registry/archive state preservation.
+
+Правила:
+
+- metadata refresh не заменяет, не удаляет, не перемещает и не перезаписывает авторитетные архивные файлы;
+- upstream revision changes записываются консервативно;
+- любая будущая download/update policy остаётся отдельным решением.
 
 ---
 
