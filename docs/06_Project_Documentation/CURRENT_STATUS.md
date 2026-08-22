@@ -14,7 +14,40 @@
 
 ## HF-0016 — Archive Automation Scheduler
 
-**Status:** IN PROGRESS
+**Status:** COMPLETED
+
+Completed:
+2026-08-22
+
+Goal:
+
+Implement a minimal, reproducible scheduler for safe periodic archive-maintenance operations.
+
+Scope:
+
+- scheduler module for periodic maintenance task execution;
+- configurable task intervals via project config;
+- integration with existing integrity, reconciliation, and archive-sync services;
+- default task set: integrity verification, reconciliation, dry-run archive synchronization;
+- all scheduled operations are read-only or conservative state-changing (additive only);
+- no destructive operations, no archive data deletion, no Registry data removal;
+- Docker Compose service for persistent scheduling;
+- automated tests for scheduler logic;
+- portable computed paths, no machine-specific hard-coded values.
+
+Verified:
+
+- 25 scheduler tests passing;
+- full pytest suite (81 tests) passing;
+- GitHub Actions CI validation;
+- NAS Docker Compose rebuild and restart verification;
+- scheduler container running and executing tasks;
+- integrity check: 1 model checked, 1 passed;
+- reconciliation: completed;
+- archive sync dry-run: completed;
+- Queue Manager health endpoint healthy;
+- Download Worker running;
+- archive data untouched.
 
 ## HF-0015 — Download Workspace Identity & Collision Safety
 
@@ -285,36 +318,7 @@ If Registry already contains models, startup recovery does not modify Registry r
 
 # Next Task
 
-## HF-0016 — Archive Automation Scheduler
-
-**Status:** IN PROGRESS
-
-Goal:
-
-Implement a minimal, reproducible scheduler for safe periodic archive-maintenance operations.
-
-Scope:
-
-- scheduler module for periodic maintenance task execution;
-- configurable task intervals via project config;
-- integration with existing integrity, reconciliation, and archive-sync services;
-- default task set: integrity verification, reconciliation, dry-run archive synchronization;
-- all scheduled operations are read-only or conservative state-changing (additive only);
-- no destructive operations, no archive data deletion, no Registry data removal;
-- Docker Compose service for persistent scheduling;
-- automated tests for scheduler logic;
-- portable computed paths, no machine-specific hard-coded values.
-
-Candidate tasks:
-
-- integrity verification (read-only, idempotent);
-- managed archive reconciliation (state-changing: adds missing Registry records only);
-- archive synchronization in dry-run mode (read-only by default).
-
-Verified:
-
-- HF-0015 completed;
-- clean working tree before HF-0016 start.
+HF-0016 is completed. Next HF to be defined in a future session.
 
 ---
 
@@ -327,7 +331,8 @@ Verified historical sequence:
 - HF-0012.2–HF-0012.5 — Integrity public API / statistics / runtime normalization;
 - HF-0013.3 — Isolated download workspace;
 - HF-0014 — Registry Reconciliation & Production Recovery;
-- HF-0015 — Download Workspace Identity & Collision Safety.
+- HF-0015 — Download Workspace Identity & Collision Safety;
+- HF-0016 — Archive Automation Scheduler.
 
 ---
 

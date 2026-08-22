@@ -257,7 +257,7 @@ Completed
 
 Последнее зарегистрированное событие:
 
-DOC-0001 — Project Documentation Framework
+HF-0016 — Archive Automation Scheduler
 
 Status:
 
@@ -349,20 +349,23 @@ Completed
 
 Status:
 
-Started
+Completed
 
-Начат milestone планировщика автоматического обслуживания архива.
+Завершён milestone планировщика автоматического обслуживания архива.
 
-Цель:
+Реализовано:
 
-Реализация минимального, воспроизводимого планировщика для безопасных периодических операций обслуживания архива.
-
-Подход:
-
-- scheduler module интегрируется с существующими integrity, reconciliation, archive-sync сервисами;
-- все операции по умолчанию read-only или консервативные state-changing (additive only);
+- scheduler module для периодического выполнения задач обслуживания;
+- конфигурируемые интервалы через config/scheduler.json;
+- интеграция с integrity, reconciliation, archive-sync сервисами;
+- задачи: integrity verification, reconciliation, archive sync (dry-run);
+- все операции read-only или additive state-changing;
 - Docker Compose service для постоянного планирования;
-- конфигурируемые интервалы через config/scheduler.json.
+- 25 автоматических тестов;
+- 81 тест проходит (полная тестовая suites);
+- GitHub Actions CI validation;
+- NAS Docker Compose rebuild и restart verification;
+- scheduler container выполняет задачи в runtime.
 
 ---
 
