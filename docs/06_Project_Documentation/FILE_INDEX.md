@@ -137,6 +137,26 @@ __init__.py
 
 ---
 
+## src/scheduler/
+
+```
+config.py
+    Scheduler configuration loading
+
+tasks.py
+    Scheduled maintenance task implementations
+
+scheduler.py
+    Periodic task scheduling loop
+
+__main__.py
+    Scheduler entry point
+
+__init__.py
+```
+
+---
+
 # 4. Registry
 
 ## registry/
@@ -173,6 +193,9 @@ download-worker/
     Dockerfile
 
 queue-manager/
+    Dockerfile
+
+scheduler/
     Dockerfile
 ```
 
@@ -224,6 +247,7 @@ AI Infrastructure
     ├── hf_client/
     ├── model_registry/
     ├── queue_manager/
+    ├── scheduler/
     └── storage/
 ```
 
@@ -231,6 +255,6 @@ AI Infrastructure
 
 Last Updated:
 
-2026-08-21
+2026-08-22
 
 End of Document

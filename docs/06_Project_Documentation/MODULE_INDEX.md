@@ -380,6 +380,48 @@ is authoritative model archive storage in the Synology runtime deployment.
 
 ---
 
+## 4.9 Scheduler
+
+Location:
+
+```text
+src/scheduler/
+```
+
+Purpose:
+
+Periodic execution of safe archive-maintenance tasks.
+
+Responsibilities include:
+
+- loading scheduler configuration;
+- scheduling task execution at configurable intervals;
+- delegating to integrity, reconciliation, and archive-sync services;
+- structured logging of task outcomes;
+- tracking consecutive task failures.
+
+Scheduled tasks:
+
+- integrity verification (read-only, idempotent);
+- managed archive reconciliation (state-changing: additive only);
+- archive synchronization in dry-run mode (read-only by default).
+
+All scheduled operations preserve authoritative archive data.
+
+Docker Compose service:
+
+```text
+scheduler
+```
+
+Configuration file:
+
+```text
+config/scheduler.json
+```
+
+---
+
 # 5. Model Registry
 
 Location:
@@ -655,6 +697,7 @@ Runtime services:
 registry-bootstrap
 queue-manager
 download-worker
+scheduler
 ```
 
 Docker Compose is the authoritative service-management mechanism.
@@ -763,7 +806,6 @@ These responsibilities must not be merged implicitly.
 Planned or not yet completed architectural areas include:
 
 ```text
-Scheduler
 Automation
 Monitoring
 Web UI
@@ -843,12 +885,18 @@ Model Registry
             │  Integrity Layer
             │       │
             └───────┴────────► Authoritative Archive
+
+  Scheduler
+    │
+    ├── integrity_check ──► Integrity Layer
+    ├── reconciliation ──► Reconciliation
+    └── archive_sync ──► Archive Sync
 ```
 
 ---
 
 Last Updated:
 
-2026-08-21
+2026-08-22
 
 End of Document

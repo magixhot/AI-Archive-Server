@@ -306,11 +306,96 @@ Production recovery orchestration для пустой Registry.
 
 - Synchronization
 - Integrity Checker
-- Scheduler
 - Automation
 - Monitoring
 
 Развитие публичных API определяется документами ROADMAP.md и CURRENT_STATUS.md.
+
+---
+
+# 11. Scheduler API
+
+## run_scheduler(config_path, ...)
+
+Назначение:
+
+Запуск планировщика периодических задач обслуживания архива.
+
+Параметры:
+
+- config_path — путь к файлу конфигурации;
+- models_root — путь к каталогу моделей для проверки целостности;
+- archive_root — путь к каталогу архива для reconciliation;
+- sync_source — исходный каталог для синхронизации;
+- sync_target — целевой каталог для синхронизации.
+
+Поведение:
+
+- загружает конфигурацию из config/scheduler.json;
+- выполняет задачи с заданными интервалами;
+- логирует результаты выполнения;
+- все операции read-only или additive state-changing.
+
+---
+
+## load_config(config_path)
+
+Назначение:
+
+Загрузка конфигурации планировщика.
+
+Возвращает:
+
+SchedulerConfig
+
+---
+
+## run_integrity_check(models_root)
+
+Назначение:
+
+Проверка целостности всех моделей в каталоге.
+
+Возвращает:
+
+TaskResult
+
+Классификация:
+
+- read-only;
+- idempotent.
+
+---
+
+## run_reconciliation(archive_root)
+
+Назначение:
+
+Сверка архива моделей с Registry.
+
+Возвращает:
+
+TaskResult
+
+Классификация:
+
+- state-changing (additive only — добавляет отсутствующие записи).
+
+---
+
+## run_archive_sync(source_root, target_root, dry_run)
+
+Назначение:
+
+Однонаправленная синхронизация архивов.
+
+Возвращает:
+
+TaskResult
+
+Классификация:
+
+- read-only по умолчанию (dry_run=True).
 
 ---
 
@@ -328,6 +413,6 @@ Production recovery orchestration для пустой Registry.
 
 Last Updated:
 
-2026-08-21
+2026-08-22
 
 End of Document
