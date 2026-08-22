@@ -402,7 +402,7 @@ Model Metadata Refresh & Upstream Revision Tracking
 
 Status:
 
-In Progress
+Completed
 
 Description:
 
@@ -416,6 +416,36 @@ Scope:
 - provenance sidecar file for each archived model;
 - scheduler integration for periodic metadata refresh;
 - automated tests for revision resolution and change detection.
+
+
+## HF-0018
+
+Name:
+
+Portable Local Agent Bootstrap
+
+Status:
+
+Completed
+
+Description:
+
+Portable bootstrap framework for local OpenCode automation.
+
+Scope:
+
+- portable bootstrap shell script with dependency checks;
+- OpenCode Worker Bridge script with PID management;
+- OpenCode Supervisor with restart limits;
+- watchdog/timeout health check script;
+- notification helper for Windows/Linux/macOS;
+- dry-run/check validation mode;
+- systemd --user service and timer templates;
+- automated tests (CI-safe);
+- installation documentation for second computer;
+- idempotent re-run behavior;
+- portable paths from HOME, script location, or repository root;
+- GitHub Actions CI validation.
 
 
 # 6. Standards

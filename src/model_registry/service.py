@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import sqlite3
 from pathlib import Path
 
@@ -554,7 +554,7 @@ def update_upstream_provenance(
         return False
 
     now = (
-        datetime.utcnow()
+        datetime.now(timezone.utc)
         .isoformat()
     )
 

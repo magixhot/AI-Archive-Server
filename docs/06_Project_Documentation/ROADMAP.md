@@ -48,11 +48,11 @@ Completed
 
 • подготовка инфраструктуры.
 
-
 ## Phase 2 — Archive Automation
 
 Status:
-Active
+
+Completed
 
 Основные задачи:
 
@@ -119,27 +119,31 @@ Planned
 
 
 # 4. Runtime Roadmap
-
 ## RT-0008 — AI Archive Server
 
 Status:
-Active
+
+Completed
 
 Назначение:
 
 Создание автономного сервера хранения AI-моделей.
 
-Ближайшие этапы разработки и текущий HF определяются документом CURRENT_STATUS.md.
+Фаза 2 — Archive Automation завершена.
 
+Ближайшие этапы разработки и текущий HF определяются документом CURRENT_STATUS.md.
 
 ## RT-0009 — AI Runtime
 
 Status:
+
 Planned
 
 Назначение:
 
 Локальный запуск AI-моделей.
+
+Переход к Phase 3 требует обновления PROJECT-0000.
 
 
 ## RT-0010 — AI Deployment
@@ -165,7 +169,7 @@ Planned
 
 # 5. Current Focus
 
-Текущим приоритетом AI Infrastructure является развитие направления Archive Automation.
+Текущим приоритетом AI Infrastructure является переход к Phase 3 — AI Runtime.
 
 Актуальные задачи, текущий Runtime-проект и следующий HF определяются исключительно документом CURRENT_STATUS.md.
 
