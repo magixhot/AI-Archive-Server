@@ -106,6 +106,12 @@ test_models/
 .huggingface/
 
 # =========================
+# Integrity history
+# =========================
+
+AI-Archive/integrity/history/
+
+# =========================
 # Python package metadata
 # =========================
 

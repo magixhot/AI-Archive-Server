@@ -64,6 +64,27 @@ services:
       - /volume3/AI_Infrastructure/02_Models:/app/02_Models:ro
 
 
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/scheduler/Dockerfile
+
+    container_name: ai-archive-scheduler
+
+    restart: unless-stopped
+
+    depends_on:
+      registry-bootstrap:
+        condition: service_completed_successfully
+
+    volumes:
+      - ./AI-Archive:/app/AI-Archive
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config:/app/config
+      - ./registry/data:/app/registry/data
+
+
   download-worker:
     build:
       context: .

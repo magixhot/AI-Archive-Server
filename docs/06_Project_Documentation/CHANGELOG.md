@@ -343,8 +343,31 @@ Completed
 
 ---
 
+# 2026-08-22
+
+## HF-0016 — Archive Automation Scheduler
+
+Status:
+
+Started
+
+Начат milestone планировщика автоматического обслуживания архива.
+
+Цель:
+
+Реализация минимального, воспроизводимого планировщика для безопасных периодических операций обслуживания архива.
+
+Подход:
+
+- scheduler module интегрируется с существующими integrity, reconciliation, archive-sync сервисами;
+- все операции по умолчанию read-only или консервативные state-changing (additive only);
+- Docker Compose service для постоянного планирования;
+- конфигурируемые интервалы через config/scheduler.json.
+
+---
+
 Last Updated:
 
-2026-08-21
+2026-08-22
 
 End of Document

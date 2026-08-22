@@ -12,6 +12,10 @@
 
 # Current HF
 
+## HF-0016 — Archive Automation Scheduler
+
+**Status:** IN PROGRESS
+
 ## HF-0015 — Download Workspace Identity & Collision Safety
 
 **Status:** COMPLETED
@@ -129,13 +133,18 @@ Verified historical sequence:
 - HF-0011.1–HF-0011.4 — Integrity service / history / CLI integration;
 - HF-0012.2–HF-0012.5 — Integrity public API / statistics / runtime normalization;
 - HF-0013.3 — Isolated download workspace;
-- HF-0014 — Registry Reconciliation & Production Recovery.
+- HF-0014 — Registry Reconciliation & Production Recovery;
+- HF-0015 — Download Workspace Identity & Collision Safety.
 
 Historical numbering gaps and duplicate numbering are preserved exactly as recorded in Git.
 
 ---
 
 # Completed
+
+## HF-0015 — Download Workspace Identity & Collision Safety
+
+**Status:** COMPLETED
 
 ## Documentation
 
@@ -276,7 +285,36 @@ If Registry already contains models, startup recovery does not modify Registry r
 
 # Next Task
 
-HF-0015 is completed. Next HF to be defined in a future session.
+## HF-0016 — Archive Automation Scheduler
+
+**Status:** IN PROGRESS
+
+Goal:
+
+Implement a minimal, reproducible scheduler for safe periodic archive-maintenance operations.
+
+Scope:
+
+- scheduler module for periodic maintenance task execution;
+- configurable task intervals via project config;
+- integration with existing integrity, reconciliation, and archive-sync services;
+- default task set: integrity verification, reconciliation, dry-run archive synchronization;
+- all scheduled operations are read-only or conservative state-changing (additive only);
+- no destructive operations, no archive data deletion, no Registry data removal;
+- Docker Compose service for persistent scheduling;
+- automated tests for scheduler logic;
+- portable computed paths, no machine-specific hard-coded values.
+
+Candidate tasks:
+
+- integrity verification (read-only, idempotent);
+- managed archive reconciliation (state-changing: adds missing Registry records only);
+- archive synchronization in dry-run mode (read-only by default).
+
+Verified:
+
+- HF-0015 completed;
+- clean working tree before HF-0016 start.
 
 ---
 
@@ -302,4 +340,4 @@ Verified historical sequence:
 ---
 
 Last Updated:
-2026-08-21
+2026-08-22

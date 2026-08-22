@@ -1,0 +1,17 @@
+{
+    "tasks": {
+        "integrity_check": {
+            "enabled": true,
+            "interval_seconds": 86400
+        },
+        "reconciliation": {
+            "enabled": true,
+            "interval_seconds": 21600
+        },
+        "archive_sync": {
+            "enabled": true,
+            "interval_seconds": 86400,
+            "dry_run": true
+        }
+    }
+}

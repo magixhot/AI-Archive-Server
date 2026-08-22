@@ -61,3 +61,6 @@ jobs:
 
       - name: Build Download Worker image
         run: docker build -f docker/download-worker/Dockerfile -t ai-archive-download-worker:ci .
+
+      - name: Build Scheduler image
+        run: docker build -f docker/scheduler/Dockerfile -t ai-archive-scheduler:ci .
