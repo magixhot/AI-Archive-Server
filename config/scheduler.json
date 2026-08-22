@@ -12,6 +12,10 @@
             "enabled": true,
             "interval_seconds": 86400,
             "dry_run": true
+        },
+        "metadata_refresh": {
+            "enabled": true,
+            "interval_seconds": 86400
         }
     }
 }

@@ -27,7 +27,10 @@ def test_get_model_includes_error_message(
             error_message TEXT,
             archive_created TEXT,
             archive_validated TEXT,
-            last_verified TEXT
+            last_verified TEXT,
+            upstream_revision TEXT,
+            upstream_revision_recorded TIMESTAMP,
+            metadata_refreshed_at TIMESTAMP
         )
         """
     )
@@ -92,7 +95,10 @@ def test_get_all_models_includes_error_message(
             error_message TEXT,
             archive_created TEXT,
             archive_validated TEXT,
-            last_verified TEXT
+            last_verified TEXT,
+            upstream_revision TEXT,
+            upstream_revision_recorded TIMESTAMP,
+            metadata_refreshed_at TIMESTAMP
         )
         """
     )

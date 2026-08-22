@@ -27,6 +27,11 @@ KNOWN_MIGRATION_COLUMNS = {
         "archive_validated",
         "last_verified",
     },
+    "003_add_upstream_provenance.sql": {
+        "upstream_revision",
+        "upstream_revision_recorded",
+        "metadata_refreshed_at",
+    },
 }
 
 

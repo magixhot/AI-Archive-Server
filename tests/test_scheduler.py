@@ -522,4 +522,4 @@ def test_scheduler_state_initialization():
 
     assert state.total_runs == 0
     assert state.started_at == 0.0
-    assert len(state.tasks) == 3
+    assert len(state.tasks) == 4

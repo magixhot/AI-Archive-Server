@@ -12,6 +12,31 @@
 
 # Current HF
 
+## HF-0017 — Model Metadata Refresh & Upstream Revision Tracking
+
+**Status:** IN PROGRESS
+
+Goal:
+
+Make archived/registered model metadata reproducible and refreshable without modifying authoritative model files. Track upstream Hugging Face repository revision/version metadata so the archive can detect source changes and preserve exact provenance over time.
+
+Scope:
+
+- provenance metadata contract for upstream revision tracking;
+- Registry schema migration for upstream revision columns;
+- metadata refresh service for safe, non-destructive upstream queries;
+- provenance.json sidecar file for each archived model;
+- scheduler integration for periodic metadata refresh;
+- automated tests for revision resolution, unchanged metadata, changed-upstream detection, offline behavior, malformed IDs, and Registry/archive state preservation.
+
+Rules:
+
+- metadata refresh must not replace, delete, move, overwrite, or redownload authoritative archive content;
+- upstream revision changes are recorded/reported conservatively;
+- any future download/update policy remains an explicit separate decision.
+
+---
+
 ## HF-0016 — Archive Automation Scheduler
 
 **Status:** COMPLETED
@@ -318,7 +343,7 @@ If Registry already contains models, startup recovery does not modify Registry r
 
 # Next Task
 
-HF-0016 is completed. Next HF to be defined in a future session.
+HF-0017 — Model Metadata Refresh & Upstream Revision Tracking is IN PROGRESS.
 
 ---
 
@@ -332,7 +357,8 @@ Verified historical sequence:
 - HF-0013.3 — Isolated download workspace;
 - HF-0014 — Registry Reconciliation & Production Recovery;
 - HF-0015 — Download Workspace Identity & Collision Safety;
-- HF-0016 — Archive Automation Scheduler.
+- HF-0016 — Archive Automation Scheduler;
+- HF-0017 — Model Metadata Refresh & Upstream Revision Tracking.
 
 ---
 

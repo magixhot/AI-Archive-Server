@@ -170,3 +170,93 @@ def run_archive_sync(
             success=False,
             message=f"Archive sync failed: {exc}",
         )
+
+
+def run_metadata_refresh(
+    archive_root: str | Path,
+) -> TaskResult:
+    from src.provenance.service import refresh_metadata
+
+    archive_path = Path(archive_root)
+
+    if not archive_path.exists():
+        return TaskResult(
+            task_name="metadata_refresh",
+            success=False,
+            message=f"Archive root does not exist: {archive_path}",
+        )
+
+    results: list[dict] = []
+    errors: list[str] = []
+    changed: int = 0
+
+    for family_dir in sorted(archive_path.iterdir()):
+        if not family_dir.is_dir():
+            continue
+
+        for model_dir in sorted(family_dir.iterdir()):
+            if not model_dir.is_dir():
+                continue
+
+            manifest_path = model_dir / "manifest.json"
+
+            if not manifest_path.exists():
+                continue
+
+            try:
+                import json
+
+                with open(
+                    manifest_path,
+                    "r",
+                    encoding="utf-8",
+                ) as f:
+                    manifest = json.load(f)
+
+                model_id = manifest.get("model_id")
+
+                if not model_id:
+                    continue
+
+                result = refresh_metadata(
+                    model_id,
+                    model_dir,
+                )
+
+                results.append(
+                    result.to_dict()
+                )
+
+                if result.upstream_changed:
+                    changed += 1
+                    logger.warning(
+                        "Upstream changed: %s",
+                        result.message,
+                    )
+
+            except Exception as exc:
+                error_msg = (
+                    f"{model_dir}: {exc}"
+                )
+                errors.append(error_msg)
+                logger.error(
+                    "Metadata refresh error: %s",
+                    error_msg,
+                )
+
+    total = len(results)
+
+    return TaskResult(
+        task_name="metadata_refresh",
+        success=not errors,
+        message=(
+            f"Refreshed {total} models: "
+            f"{changed} upstream changes, "
+            f"{len(errors)} errors"
+        ),
+        details={
+            "total": total,
+            "upstream_changed": changed,
+            "errors": errors,
+        },
+    )

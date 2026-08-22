@@ -13,6 +13,7 @@ DEFAULT_CONFIG_PATH = Path("config/scheduler.json")
 DEFAULT_INTEGRITY_INTERVAL = 86400
 DEFAULT_RECONCILIATION_INTERVAL = 21600
 DEFAULT_ARCHIVE_SYNC_INTERVAL = 86400
+DEFAULT_METADATA_REFRESH_INTERVAL = 86400
 
 
 @dataclass
@@ -45,6 +46,12 @@ class SchedulerConfig:
             enabled=True,
             interval_seconds=DEFAULT_ARCHIVE_SYNC_INTERVAL,
             dry_run=True,
+        )
+    )
+    metadata_refresh: TaskConfig = field(
+        default_factory=lambda: TaskConfig(
+            enabled=True,
+            interval_seconds=DEFAULT_METADATA_REFRESH_INTERVAL,
         )
     )
 
@@ -105,6 +112,16 @@ def load_config(
                 DEFAULT_ARCHIVE_SYNC_INTERVAL,
             ),
             dry_run=tc.get("dry_run", True),
+        )
+
+    if "metadata_refresh" in tasks:
+        tc = tasks["metadata_refresh"]
+        config.metadata_refresh = TaskConfig(
+            enabled=tc.get("enabled", True),
+            interval_seconds=tc.get(
+                "interval_seconds",
+                DEFAULT_METADATA_REFRESH_INTERVAL,
+            ),
         )
 
     return config

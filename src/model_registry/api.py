@@ -7,6 +7,7 @@ from .service import (
     get_families,
     model_exists,
     retry_failed,
+    update_upstream_provenance,
 )
 
 
@@ -116,3 +117,19 @@ def find_model(
 def list_families():
 
     return get_families()
+
+
+def update_provenance(
+    model_id: str,
+    upstream_revision: str | None,
+):
+
+    updated = update_upstream_provenance(
+        model_id,
+        upstream_revision,
+    )
+
+    return {
+        "model_id": model_id,
+        "updated": updated,
+    }

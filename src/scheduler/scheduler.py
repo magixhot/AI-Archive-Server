@@ -51,6 +51,12 @@ def _build_task_states(
         enabled=config.archive_sync.enabled,
     )
 
+    tasks["metadata_refresh"] = TaskState(
+        name="metadata_refresh",
+        interval_seconds=config.metadata_refresh.interval_seconds,
+        enabled=config.metadata_refresh.enabled,
+    )
+
     return tasks
 
 
@@ -155,6 +161,7 @@ def _run_task(
     from .tasks import (
         run_archive_sync,
         run_integrity_check,
+        run_metadata_refresh,
         run_reconciliation,
     )
 
@@ -170,6 +177,9 @@ def _run_task(
             sync_target,
             dry_run=dry_run,
         )
+
+    if task_name == "metadata_refresh":
+        return run_metadata_refresh(archive_root)
 
     return TaskResult(
         task_name=task_name,

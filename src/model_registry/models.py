@@ -23,3 +23,9 @@ class ModelRecord:
     created_at: Optional[datetime] = None
 
     verified_at: Optional[datetime] = None
+
+    upstream_revision: Optional[str] = None
+
+    upstream_revision_recorded: Optional[datetime] = None
+
+    metadata_refreshed_at: Optional[datetime] = None

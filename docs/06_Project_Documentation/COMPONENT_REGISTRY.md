@@ -371,6 +371,53 @@ Scope:
 - Docker Compose and CI verification.
 
 
+## HF-0016
+
+Name:
+
+Archive Automation Scheduler
+
+Status:
+
+Completed
+
+Description:
+
+Completed RT-0008 scheduler milestone.
+
+Scope:
+
+- scheduler module for periodic maintenance task execution;
+- configurable task intervals via project config;
+- integration with integrity, reconciliation, and archive-sync services;
+- Docker Compose service for persistent scheduling;
+- automated tests for scheduler logic.
+
+
+## HF-0017
+
+Name:
+
+Model Metadata Refresh & Upstream Revision Tracking
+
+Status:
+
+In Progress
+
+Description:
+
+Make archived/registered model metadata reproducible and refreshable without modifying authoritative model files.
+
+Scope:
+
+- upstream provenance metadata contract;
+- Registry schema migration for upstream revision tracking;
+- metadata refresh service for safe non-destructive upstream queries;
+- provenance sidecar file for each archived model;
+- scheduler integration for periodic metadata refresh;
+- automated tests for revision resolution and change detection.
+
+
 # 6. Standards
 
 ## STD-0001

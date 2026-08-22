@@ -148,7 +148,10 @@ def get_all_models():
             error_message,
             archive_created,
             archive_validated,
-            last_verified
+            last_verified,
+            upstream_revision,
+            upstream_revision_recorded,
+            metadata_refreshed_at
         FROM models
         ORDER BY model_id
         """
@@ -187,7 +190,10 @@ def get_model(
             error_message,
             archive_created,
             archive_validated,
-            last_verified
+            last_verified,
+            upstream_revision,
+            upstream_revision_recorded,
+            metadata_refreshed_at
         FROM models
         WHERE model_id = ?
         """,
@@ -510,6 +516,61 @@ def retry_failed(
         """,
         (
             ModelStatus.QUEUED.value,
+            model_id,
+        ),
+    )
+
+    connection.commit()
+
+    connection.close()
+
+    return True
+
+
+def update_upstream_provenance(
+    model_id: str,
+    upstream_revision: str | None,
+) -> bool:
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT 1
+        FROM models
+        WHERE model_id = ?
+        """,
+        (
+            model_id,
+        ),
+    )
+
+    row = cursor.fetchone()
+
+    if row is None:
+        connection.close()
+        return False
+
+    now = (
+        datetime.utcnow()
+        .isoformat()
+    )
+
+    cursor.execute(
+        """
+        UPDATE models
+        SET
+            upstream_revision = ?,
+            upstream_revision_recorded = ?,
+            metadata_refreshed_at = ?
+        WHERE model_id = ?
+        """,
+        (
+            upstream_revision,
+            now,
+            now,
             model_id,
         ),
     )
